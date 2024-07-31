@@ -1,77 +1,78 @@
-import { fireEvent, render, screen } from '@testing-library/react-native';
-import { MMKV } from 'react-native-mmkv';
-import { I18nextProvider } from 'react-i18next';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { fireEvent, render, screen } from "@testing-library/react-native"
+import { I18nextProvider } from "react-i18next"
+import { MMKV } from "react-native-mmkv"
+import { SafeAreaProvider } from "react-native-safe-area-context"
 
-import { ThemeProvider } from '@/theme';
-import i18n from '@/translations';
+import { ThemeProvider } from "@/theme"
 
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Example from './Example';
+import i18n from "@/translations"
 
-describe('Example screen should render correctly', () => {
-	let storage: MMKV;
-	const queryClient = new QueryClient({
-		defaultOptions: {
-			queries: {
-				retry: false,
-				gcTime: Infinity,
-			},
-			mutations: {
-				gcTime: Infinity,
-			},
-		},
-	});
+import Example from "./Example"
 
-	beforeAll(() => {
-		storage = new MMKV();
-	});
+describe("Example screen should render correctly", () => {
+  let storage: MMKV
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+        gcTime: Infinity,
+      },
+      mutations: {
+        gcTime: Infinity,
+      },
+    },
+  })
 
-	test('the user change the language', () => {
-		const component = (
-			<SafeAreaProvider>
-				<ThemeProvider storage={storage}>
-					<I18nextProvider i18n={i18n}>
-						<QueryClientProvider client={queryClient}>
-							<Example />
-						</QueryClientProvider>
-					</I18nextProvider>
-				</ThemeProvider>
-			</SafeAreaProvider>
-		);
+  beforeAll(() => {
+    storage = new MMKV()
+  })
 
-		render(component);
+  test("the user change the language", () => {
+    const component = (
+      <SafeAreaProvider>
+        <ThemeProvider storage={storage}>
+          <I18nextProvider i18n={i18n}>
+            <QueryClientProvider client={queryClient}>
+              <Example />
+            </QueryClientProvider>
+          </I18nextProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    )
 
-		expect(i18n.language).toBe('en');
+    render(component)
 
-		const button = screen.getByTestId('change-language-button');
-		expect(button).toBeDefined();
-		fireEvent.press(button);
+    expect(i18n.language).toBe("en")
 
-		expect(i18n.language).toBe('fr');
-	});
+    const button = screen.getByTestId("change-language-button")
+    expect(button).toBeDefined()
+    fireEvent.press(button)
 
-	test('the user change the theme', () => {
-		const component = (
-			<SafeAreaProvider>
-				<ThemeProvider storage={storage}>
-					<I18nextProvider i18n={i18n}>
-						<QueryClientProvider client={queryClient}>
-							<Example />
-						</QueryClientProvider>
-					</I18nextProvider>
-				</ThemeProvider>
-			</SafeAreaProvider>
-		);
+    expect(i18n.language).toBe("fr")
+  })
 
-		render(component);
+  test("the user change the theme", () => {
+    const component = (
+      <SafeAreaProvider>
+        <ThemeProvider storage={storage}>
+          <I18nextProvider i18n={i18n}>
+            <QueryClientProvider client={queryClient}>
+              <Example />
+            </QueryClientProvider>
+          </I18nextProvider>
+        </ThemeProvider>
+      </SafeAreaProvider>
+    )
 
-		expect(storage.getString('theme')).toBe('default');
+    render(component)
 
-		const button = screen.getByTestId('change-theme-button');
-		expect(button).toBeDefined();
-		fireEvent.press(button);
+    expect(storage.getString("theme")).toBe("default")
 
-		expect(storage.getString('theme')).toBe('dark');
-	});
-});
+    const button = screen.getByTestId("change-theme-button")
+    expect(button).toBeDefined()
+    fireEvent.press(button)
+
+    expect(storage.getString("theme")).toBe("dark")
+  })
+})
