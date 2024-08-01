@@ -8,19 +8,19 @@ import { styles } from "./SettingScreen.style"
 
 export default function SettingScreen() {
   const { variant, changeTheme } = useTheme()
-  const { t, i18n } = useTranslation()
+  const { t, i18n } = useTranslation("setting")
   function handleChangeTheme() {
     changeTheme(variant === "default" ? "dark" : "default")
   }
 
   function handleChangeLanguage() {
-    i18n.changeLanguage(i18n.language === "fr" ? "en" : "fr")
+    i18n.changeLanguage(i18n.language === "vi" ? "en" : "vi")
   }
 
   return (
     <View style={styles.container}>
-      <Button title={`Theme: ${variant}`} onPress={handleChangeTheme} />
-      <Button title={`Language: ${i18n.language}`} onPress={handleChangeLanguage} />
+      <Button title={t("THEME_TITLE", { theme: variant })} onPress={handleChangeTheme} />
+      <Button title={t("LANGUAGE_TITLE", { lng: i18n.language })} onPress={handleChangeLanguage} />
     </View>
   )
 }
