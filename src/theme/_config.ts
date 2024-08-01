@@ -28,12 +28,22 @@ const colorsDark = {
   blue500: "#0063F7",
 } as const
 
+const families = {
+  "500": "Roboto-Medium.ttf",
+  "400": "Roboto-Regular.ttf",
+  "300": "Roboto-Light.ttf",
+  "200": "Roboto-Thin.ttf",
+  "700": "Roboto-Bold.ttf",
+  "900": "Roboto-Black.ttf",
+} as const
+
 const sizes = [12, 16, 24, 32, 40, 80] as const
 
 export const config = {
   colors: colorsLight,
   fonts: {
     sizes,
+    families,
     colors: colorsLight,
   },
   gutters: sizes,
@@ -53,6 +63,7 @@ export const config = {
       colors: colorsDark,
       fonts: {
         colors: colorsDark,
+        families,
       },
       backgrounds: colorsDark,
       navigationColors: {

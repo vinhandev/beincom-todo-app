@@ -22,4 +22,13 @@ export type FontColors = {
     : never
 }
 
-export type Fonts = FontSizes & FontColors & typeof staticFontStyles
+type FontFamiliesKeys = `family_${keyof UnionConfiguration["fonts"]["families"]}`
+export type FontFamilies = {
+  [key in FontFamiliesKeys]: RemoveBeforeSeparator<key> extends keyof UnionConfiguration["fonts"]["families"]
+    ? {
+        fontFamily: UnionConfiguration["fonts"]["families"][RemoveBeforeSeparator<key>]
+        fontWeight: RemoveBeforeSeparator<key>
+      }
+    : never
+}
+export type Fonts = FontSizes & FontColors & FontFamilies & typeof staticFontStyles

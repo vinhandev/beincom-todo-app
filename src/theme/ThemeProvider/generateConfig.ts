@@ -39,6 +39,7 @@ export default (variant: Variant) => {
   return {
     colors,
     fonts: {
+      families: defaultConfig.fonts.families,
       sizes: defaultConfig.fonts.sizes,
       colors: fontColors,
     },

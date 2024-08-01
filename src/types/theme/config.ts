@@ -15,6 +15,7 @@ export type FulfilledThemeConfiguration = {
   readonly colors: Record<string, string>
   fonts: {
     sizes: readonly number[]
+    readonly families: Record<string, string>
     readonly colors: Record<string, string>
   }
   gutters: readonly number[]
@@ -30,6 +31,7 @@ export type FulfilledThemeConfiguration = {
 export type VariantThemeConfiguration = {
   readonly colors: FulfilledThemeConfiguration["colors"]
   fonts: {
+    readonly families: FulfilledThemeConfiguration["fonts"]["families"]
     readonly colors: FulfilledThemeConfiguration["fonts"]["colors"]
   }
   readonly backgrounds: FulfilledThemeConfiguration["backgrounds"]

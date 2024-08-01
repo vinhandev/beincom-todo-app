@@ -9,7 +9,12 @@ import { config } from "@/theme/_config"
 import { generateBackgrounds } from "@/theme/backgrounds"
 import { generateBorderColors, generateBorderRadius, generateBorderWidths } from "@/theme/borders"
 import componentsGenerator from "@/theme/components"
-import { generateFontColors, generateFontSizes, staticFontStyles } from "@/theme/fonts"
+import {
+  generateFontColors,
+  generateFontFamilies,
+  generateFontSizes,
+  staticFontStyles,
+} from "@/theme/fonts"
 import { generateGutters } from "@/theme/gutters"
 import layout from "@/theme/layout"
 import generateConfig from "@/theme/ThemeProvider/generateConfig"
@@ -53,6 +58,7 @@ function ThemeProvider({ children = false, storage }: Props) {
     return {
       ...generateFontSizes(),
       ...generateFontColors(fullConfig),
+      ...generateFontFamilies(fullConfig),
       ...staticFontStyles,
     }
   }, [fullConfig])
