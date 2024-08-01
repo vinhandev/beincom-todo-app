@@ -7,7 +7,7 @@ export default function HomeScreen() {
   console.log(fonts.family_400, fonts.family_700)
   return (
     <View>
-      <Text style={[fonts.size_32, fonts.family_700]}>HomeScreen</Text>
+      <Text style={[fonts.size_32, fonts.family_700, fonts.black]}>HomeScreen</Text>
     </View>
   )
 }

@@ -16,8 +16,8 @@ const colorsLight = {
 } as const
 
 const colorsDark = {
-  white: "#FFFFFF",
-  black: "#000000",
+  white: "#021526",
+  black: "#DDE6ED",
   red500: "#FF1C00",
   green500: "#00B348",
   gray500: "#E9EDF3",
@@ -55,8 +55,8 @@ export const config = {
   },
   navigationColors: {
     ...DefaultTheme.colors,
-    background: colorsLight.gray50,
-    card: colorsLight.gray50,
+    background: colorsLight.white,
+    card: colorsLight.white,
   },
   variants: {
     dark: {
