@@ -19,6 +19,9 @@ export function TopTabNavigator({
   function handleNavigateProfile() {
     navigation.navigate("Profile")
   }
+  function handleNavigateSetting() {
+    navigation.navigate("Setting")
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -31,8 +34,9 @@ export function TopTabNavigator({
             padding: 20,
           }}
         >
-          <Text>Tasks</Text>
           <Button title="Open Profile" onPress={handleNavigateProfile} />
+          <Text>Tasks</Text>
+          <Button title="Open Setting" onPress={handleNavigateSetting} />
         </View>
         <View style={{ flex: 1 }}>
           <Tab.Navigator>

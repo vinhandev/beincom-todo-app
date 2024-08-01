@@ -8,7 +8,7 @@ import { useTheme } from "@/theme"
 
 import { BottomTab } from "@/components/template"
 
-import { Example, HomeScreen, LoginScreen, ProfileScreen } from "@/screens"
+import { Example, HomeScreen, LoginScreen, ProfileScreen, SettingScreen } from "@/screens"
 
 import { TopTabNavigator } from "./TopTabNavigator"
 
@@ -24,6 +24,7 @@ function ApplicationNavigator() {
           <Stack.Screen name="TopTab" component={TopTabNavigator} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
+          <Stack.Screen name="Setting" component={SettingScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
