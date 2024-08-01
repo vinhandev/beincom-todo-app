@@ -14,6 +14,7 @@
     "postinstall": "npx patch-package"
   },
   "dependencies": {
+    "@nozbe/watermelondb": "^0.27.1",
     "@react-native-masked-view/masked-view": "^0.3.1",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
