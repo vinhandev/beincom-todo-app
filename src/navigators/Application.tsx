@@ -6,6 +6,8 @@ import type { RootStackParamList } from "@/types/navigation"
 
 import { useTheme } from "@/theme"
 
+import { BottomTab } from "@/components/template"
+
 import { Example, HomeScreen, LoginScreen, ProfileScreen } from "@/screens"
 
 import { TopTabNavigator } from "./TopTabNavigator"

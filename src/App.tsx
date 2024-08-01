@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/theme"
 import ApplicationNavigator from "./navigators/Application"
 
 import "./translations"
+import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 export const queryClient = new QueryClient()
 
@@ -16,7 +17,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider storage={storage}>
-        <ApplicationNavigator />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <ApplicationNavigator />
+        </GestureHandlerRootView>
       </ThemeProvider>
     </QueryClientProvider>
   )
