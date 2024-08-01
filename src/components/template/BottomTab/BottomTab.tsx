@@ -1,5 +1,5 @@
 import { PropsWithChildren, useCallback, useMemo, useRef } from "react"
-import { Button, Text, View } from "react-native"
+import { Button, Keyboard, Text, TextInput, View } from "react-native"
 
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
 
@@ -13,6 +13,7 @@ export default function BottomTab({ children }: PropsWithChildren) {
 
   // variables
   const snapPoints = useMemo(() => ["50%"], [])
+  const snapPointsInput = useMemo(() => ["50%"], [])
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
@@ -41,32 +42,47 @@ export default function BottomTab({ children }: PropsWithChildren) {
       </View>
       <BottomSheetModal
         ref={bottomSheetListsModalRef}
-        index={-1}
+        index={0}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
       >
-        <BottomSheetView style={styles.container}>
-          <Text>Lists Bottom Tab</Text>
+        <BottomSheetView style={styles.bottomSheet}>
+          <View style={styles.tabContent}>
+            <Text>Lists Bottom Tab</Text>
+          </View>
         </BottomSheetView>
       </BottomSheetModal>
       <BottomSheetModal
         ref={bottomSheetAddTaskModalRef}
-        index={-1}
-        snapPoints={snapPoints}
+        index={0}
+        snapPoints={snapPointsInput}
         onChange={handleSheetChanges}
       >
-        <BottomSheetView style={styles.container}>
-          <Text>Add Task BottomSheet</Text>
+        <BottomSheetView style={styles.bottomSheet}>
+          <View style={styles.tabContent}>
+            <Text>Add Task BottomSheet</Text>
+            <TextInput
+              style={{
+                borderWidth: 1,
+                borderColor: "black",
+                borderRadius: 5,
+                padding: 10,
+                marginBottom: 10,
+              }}
+            />
+          </View>
         </BottomSheetView>
       </BottomSheetModal>
       <BottomSheetModal
         ref={bottomSheetFilterModalRef}
-        index={-1}
+        index={0}
         snapPoints={snapPoints}
         onChange={handleSheetChanges}
       >
-        <BottomSheetView style={styles.container}>
-          <Text>Filter tasks options BottomSheet</Text>
+        <BottomSheetView style={styles.bottomSheet}>
+          <View style={styles.tabContent}>
+            <Text>Filter tasks options BottomSheet</Text>
+          </View>
         </BottomSheetView>
       </BottomSheetModal>
     </BottomSheetModalProvider>
