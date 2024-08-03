@@ -4,7 +4,7 @@ export default appSchema({
   version: 1,
   tables: [
     tableSchema({
-      name: "lists",
+      name: "categories",
       columns: [
         { name: "title", type: "string" },
         { name: "user_id", type: "string" },
@@ -15,7 +15,7 @@ export default appSchema({
       columns: [
         { name: "title", type: "string" },
         { name: "is_completed", type: "boolean" },
-        { name: "list_id", type: "string" },
+        { name: "category_id", type: "string", isIndexed: true },
       ],
     }),
   ],

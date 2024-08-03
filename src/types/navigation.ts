@@ -1,4 +1,4 @@
-import type { StackScreenProps } from "@react-navigation/stack"
+import { NativeStackScreenProps } from "@react-navigation/native-stack"
 
 export type RootStackParamList = {
   TopTab: undefined
@@ -8,4 +8,4 @@ export type RootStackParamList = {
 }
 
 export type RootScreenProps<S extends keyof RootStackParamList = keyof RootStackParamList> =
-  StackScreenProps<RootStackParamList, S>
+  NativeStackScreenProps<RootStackParamList, S>

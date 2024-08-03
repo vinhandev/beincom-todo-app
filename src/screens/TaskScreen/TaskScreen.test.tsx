@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/theme"
 
 import i18n from "@/translations"
 
-import Example from "./Example"
+import Example from "./TaskScreen"
 
 describe("Example screen should render correctly", () => {
   let storage: MMKV

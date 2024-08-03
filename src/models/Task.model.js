@@ -1,12 +1,13 @@
 import { Model } from "@nozbe/watermelondb"
-import {field , text} from "@nozbe/watermelondb/decorators"
+import {field , relation, text} from "@nozbe/watermelondb/decorators"
 export default class Task extends Model {
   static table = "tasks"
 
   static associations = {
-    list: { type: "belongs_to", key: "list_id" },
+    categories: { type: "belongs_to", key: "category_id" },
   }
 
-  @text("title") title
-  @field("is_completed") is_completed 
+  @field("title") title
+  @field("is_completed") is_completed
+  @relation("categories", "category_id") category
 }

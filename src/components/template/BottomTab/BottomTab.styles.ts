@@ -9,10 +9,15 @@ export const styles = StyleSheet.create({
     backgroundColor: "red",
   },
   tab: {
+    height: 70,
+
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    padding: 20,
+
+    padding: 10,
+
+    borderWidth: 0.5,
   },
   tabContent: {
     flex: 1,

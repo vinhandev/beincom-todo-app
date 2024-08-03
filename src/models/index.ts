@@ -5,9 +5,8 @@ import SQLiteAdapter from "@nozbe/watermelondb/adapters/sqlite"
 import migrations from "@/models/migrations"
 import schema from "@/models/schema"
 
-// models
-import List from "./List.model"
-import Task from "./Task.model"
+import Category from "./category.model"
+import Task from "./task.model"
 
 // watermelon db
 const adapter = new SQLiteAdapter({
@@ -27,7 +26,7 @@ const adapter = new SQLiteAdapter({
 })
 
 // Then, make a Watermelon database from it!
-const database = new Database({
+export const database = new Database({
   adapter,
-  modelClasses: [Task, List],
+  modelClasses: [Task, Category],
 })
