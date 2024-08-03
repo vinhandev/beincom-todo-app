@@ -83,8 +83,13 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
         <View style={[{ flex: 1 }, components.shadow]}>
           {categories && categories.length > 0 ? (
             <Tab.Navigator tabBar={tabBarHeader}>
-              {categories.map((list) => (
-                <Tab.Screen key={list.id} name={list.title} component={TaskScreen} />
+              {categories.map((category) => (
+                <Tab.Screen
+                  key={category.id}
+                  name={category.title}
+                  component={TaskScreen}
+                  initialParams={{ categoryId: category.id }}
+                />
               ))}
             </Tab.Navigator>
           ) : null}

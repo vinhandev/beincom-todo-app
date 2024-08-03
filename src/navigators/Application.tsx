@@ -1,4 +1,11 @@
-import { NavigationContainer } from "@react-navigation/native"
+import { LegacyRef, Ref, useRef } from "react"
+
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+  NavigationContainerProps,
+  NavigationContainerRef,
+} from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { SafeAreaProvider } from "react-native-safe-area-context"
 
@@ -12,12 +19,14 @@ import { EnhancedTopTabNavigator } from "./TopTabNavigator"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
+export const navigationRef = createNavigationContainerRef()
+
 function ApplicationNavigator() {
   const { variant, navigationTheme } = useTheme()
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer theme={navigationTheme}>
+      <NavigationContainer ref={navigationRef} theme={navigationTheme}>
         <Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
           <Stack.Screen name="TopTab" component={EnhancedTopTabNavigator} />
           <Stack.Screen name="Login" component={LoginScreen} />

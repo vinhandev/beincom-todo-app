@@ -28,7 +28,7 @@ type TaskPage = {
   data: TaskType[]
 }
 
-const TaskDB = database.collections.get<Task>("tasks")
+export const TaskDB = database.collections.get<Task>("tasks")
 
 export const findTask = async (id: string) => {
   return TaskDB.find(id)

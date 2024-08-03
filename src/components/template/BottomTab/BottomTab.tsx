@@ -3,15 +3,20 @@ import { Button, Keyboard, Text, TextInput, View } from "react-native"
 
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
 import { withObservables } from "@nozbe/watermelondb/react"
+import { Route } from "@react-navigation/native"
 import { InfiniteData, QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
 
 import { useTheme } from "@/theme"
 
 import { database } from "@/models"
-import { CategoryPage, useAddCategory } from "@/services/queries/category"
+import Category from "@/models/category.model"
+import { navigationRef } from "@/navigators/Application"
+import { CategoryDB, CategoryPage, findList, useAddCategory } from "@/services/queries/category"
+import { useAddTask } from "@/services/queries/task"
 
 import { styles } from "./BottomTab.styles"
 import AddCategoryBottomSheet from "./components/AddBottomSheet/AddCategoryBottomSheet"
+import AddTaskBottomSheet from "./components/AddTaskBottomSheet/AddTaskBottomSheet"
 import AllListBottomSheet from "./components/AllListBottomSheet/AllListBottomSheet"
 
 export default function BottomTab({
@@ -39,6 +44,7 @@ export default function BottomTab({
 
   // functions
   const { mutate } = useAddCategory()
+  const { mutate: addTask } = useAddTask()
 
   function handleAddTask() {
     bottomSheetAddTaskModalRef.current?.present()
@@ -76,6 +82,44 @@ export default function BottomTab({
     return data
   }
 
+  async function handleAddDatabaseTask(text: string) {
+    if (!text) {
+      throw new Error("Title is required")
+    }
+
+    const route: { params: { category: string; categoryId: string } } =
+      navigationRef.current?.getCurrentRoute() as any
+    if (!route || !route.params) {
+      throw new Error("Route is required")
+    }
+
+    const category = await findList(route.params.categoryId)
+
+    const data = await addTask(
+      {
+        title: text,
+        isCompleted: false,
+        category: {
+          name: category.title,
+          tasks: category.tasks,
+          id: category.id,
+          user_id: category.user_id,
+        },
+        categoryId: route.params.categoryId,
+      },
+      {
+        onSuccess: (data) => {
+          console.log("success", data)
+          bottomSheetAddTaskModalRef.current?.close()
+        },
+        onError: (err) => {
+          throw new Error(err.message)
+        },
+      },
+    )
+    return data
+  }
+
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>{children}</View>
@@ -86,27 +130,7 @@ export default function BottomTab({
       </View>
       <AddCategoryBottomSheet ref={addingListRef} onAddCategory={handleAddDatabaseList} />
       <AllListBottomSheet ref={bottomSheetListsModalRef} onOpenAddListBottomSheet={handleAddList} />
-      <BottomSheetModal
-        ref={bottomSheetAddTaskModalRef}
-        index={0}
-        snapPoints={snapPointsInput}
-        onChange={handleSheetChanges}
-      >
-        <BottomSheetView style={styles.bottomSheet}>
-          <View style={styles.tabContent}>
-            <Text>Add Task BottomSheet</Text>
-            <TextInput
-              style={{
-                borderWidth: 1,
-                borderColor: "black",
-                borderRadius: 5,
-                padding: 10,
-                marginBottom: 10,
-              }}
-            />
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
+      <AddTaskBottomSheet ref={bottomSheetAddTaskModalRef} onAddTask={handleAddDatabaseTask} />
 
       <BottomSheetModal
         ref={bottomSheetFilterModalRef}
