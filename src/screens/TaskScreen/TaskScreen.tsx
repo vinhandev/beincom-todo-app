@@ -1,22 +1,29 @@
-import { useEffect, useState } from "react"
-import { Button, FlatList, ScrollView, Text, TouchableOpacity, View } from "react-native"
+import { useState } from "react"
+import {
+  Button,
+  FlatList,
+  ScrollView,
+  Text,
+  Touchable,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native"
 
 import { Q } from "@nozbe/watermelondb"
 import { withObservables } from "@nozbe/watermelondb/react"
 import { useNavigation, useRoute } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated"
-
-import { RootStackParamList } from "@/types/navigation"
+import BouncyCheckbox from "react-native-bouncy-checkbox"
 
 import { useTheme } from "@/theme"
+import ArrowIcon from "@/theme/assets/svg/ArrowIcon"
+import EmptyIcon from "@/theme/assets/svg/EmptyIcon"
 
 import useUserStore from "@/store/useUserStore"
 
-import Category from "@/models/category.model"
 import Task from "@/models/task.model"
-import { CategoryDB } from "@/services/queries/category"
-import { TaskDB, TaskType, useUpdateTask } from "@/services/queries/task"
+import { TaskDB, useUpdateTask } from "@/services/queries/task"
 
 import { styles } from "./TaskScreen.style"
 
@@ -27,6 +34,8 @@ function TaskList({
   tasks: Task[]
   onNavigateTaskDetail: (taskId: string) => void
 }) {
+  const { fonts, gutters, colors, borders } = useTheme()
+  const [isHide, setHide] = useState(true)
   const sortMode = useUserStore((state) => state.sortMode)
   const formattedTasks =
     sortMode === "default"
@@ -56,21 +65,62 @@ function TaskList({
     )
   }
 
-  const renderTaskItem = ({ item }: { item: Task }) => {
+  const renderTaskItem = ({ item, index }: { item: Task; index: number }) => {
     return (
-      <View style={styles.containerTask}>
-        <Button
-          title={item.is_completed ? "Unfinish" : "Finish"}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        onPress={() => onNavigateTaskDetail(item.id)}
+        style={[styles.containerTask, borders.gray600, index !== 0 ? borders.wTop_1 : undefined]}
+      >
+        <TouchableOpacity
+          style={{
+            width: 44,
+            height: "100%",
+
+            justifyContent: "center",
+            alignItems: "center",
+          }}
           onPress={() => updateTaskStatus(item)}
-        />
-        <TouchableOpacity onPress={() => onNavigateTaskDetail(item.id)}>
-          <Text style={{ textDecorationLine: item.is_completed ? "line-through" : "none" }}>
+        >
+          <BouncyCheckbox
+            size={20}
+            fillColor={colors.blue500}
+            isChecked={item.is_completed}
+            onPress={() => updateTaskStatus(item)}
+          />
+        </TouchableOpacity>
+        <View style={{ flex: 1, justifyContent: "center" }}>
+          <Text
+            style={[
+              {
+                textDecorationLine: item.is_completed ? "line-through" : "none",
+              },
+              fonts.size_16,
+              fonts.family_400,
+              fonts.black,
+            ]}
+          >
             {item.title}
           </Text>
-        </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    )
+  }
+
+  if (tasks.length === 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <EmptyIcon width={200} height={200} color={colors.purple700} />
+        <Text style={[fonts.size_24, fonts.family_700, fonts.black, fonts.alignCenter]}>
+          No Tasks yet
+        </Text>
+        <Text style={[fonts.size_12, fonts.family_400, fonts.gray700, fonts.alignCenter]}>
+          You'll see tasks here when you create one.
+        </Text>
       </View>
     )
   }
+
   return (
     <View>
       <ScrollView>
@@ -80,13 +130,29 @@ function TaskList({
           renderItem={renderTaskItem}
           keyExtractor={(item) => item.id ?? ""}
         />
-        <Text>Completed Tasks</Text>
-        <FlatList
-          scrollEnabled={false}
-          data={completedTasks}
-          renderItem={renderTaskItem}
-          keyExtractor={(item) => item.id ?? ""}
-        />
+        {completedTasks.length > 0 ? (
+          <View>
+            <TouchableOpacity
+              onPress={() => setHide(!isHide)}
+              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+            >
+              <View style={{ marginTop: 5, transform: [{ rotate: isHide ? "-90deg" : "0deg" }] }}>
+                <ArrowIcon width={14} height={14} />
+              </View>
+              <Text
+                style={[fonts.family_700, fonts.black, fonts.size_16, gutters.paddingVertical_16]}
+              >{`Completed Tasks (${completedTasks.length})`}</Text>
+            </TouchableOpacity>
+            <View style={{ display: isHide ? "none" : "flex" }}>
+              <FlatList
+                scrollEnabled={false}
+                data={completedTasks}
+                renderItem={renderTaskItem}
+                keyExtractor={(item) => item.id ?? ""}
+              />
+            </View>
+          </View>
+        ) : null}
       </ScrollView>
     </View>
   )
@@ -103,16 +169,22 @@ export default function TaskScreen() {
   const { params } = useRoute<any>()
   const categoryId = params?.categoryId ?? ""
 
-  const { fonts } = useTheme()
+  const { gutters, fonts } = useTheme()
 
   function handleNavigateTaskDetail(taskId: string) {
     navigation.navigate("TaskDetail", { taskId })
   }
 
   return (
-    <View>
-      <Text style={[fonts.size_32, fonts.family_700, fonts.black]}>Task</Text>
-      <List categoryId={categoryId} onNavigateTaskDetail={handleNavigateTaskDetail} />
+    <View style={[gutters.paddingHorizontal_16, gutters.paddingVertical_12, { flex: 1 }]}>
+      <Text style={[fonts.size_32, fonts.family_700, fonts.black]}>Tasks</Text>
+      <Text style={[fonts.size_16, fonts.family_400, fonts.gray700]}>
+        Your tasks will appear here.
+      </Text>
+
+      <View style={[gutters.paddingTop_16, { flex: 1 }]}>
+        <List categoryId={categoryId} onNavigateTaskDetail={handleNavigateTaskDetail} />
+      </View>
     </View>
   )
 }

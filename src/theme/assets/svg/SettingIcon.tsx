@@ -2,7 +2,7 @@ import React from "react"
 
 import { Path, Svg } from "react-native-svg"
 
-const OptionIcon = ({
+const SettingIcon = ({
   width = 24,
   height = 24,
   color = "#000",
@@ -19,4 +19,4 @@ const OptionIcon = ({
   </Svg>
 )
 
-export default OptionIcon
+export default SettingIcon
