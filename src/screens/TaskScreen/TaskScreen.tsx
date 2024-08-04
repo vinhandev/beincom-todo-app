@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { Button, FlatList, Text, View } from "react-native"
+import { Button, FlatList, ScrollView, Text, View } from "react-native"
 
 import { Q } from "@nozbe/watermelondb"
 import { withObservables } from "@nozbe/watermelondb/react"
@@ -52,17 +52,21 @@ function TaskList({ tasks }: { tasks: Task[] }) {
   }
   return (
     <View>
-      <FlatList
-        data={unCompletedTasks}
-        renderItem={renderTaskItem}
-        keyExtractor={(item) => item.id ?? ""}
-      />
-      <Text>Completed Tasks</Text>
-      <FlatList
-        data={completedTasks}
-        renderItem={renderTaskItem}
-        keyExtractor={(item) => item.id ?? ""}
-      />
+      <ScrollView>
+        <FlatList
+          scrollEnabled={false}
+          data={unCompletedTasks}
+          renderItem={renderTaskItem}
+          keyExtractor={(item) => item.id ?? ""}
+        />
+        <Text>Completed Tasks</Text>
+        <FlatList
+          scrollEnabled={false}
+          data={completedTasks}
+          renderItem={renderTaskItem}
+          keyExtractor={(item) => item.id ?? ""}
+        />
+      </ScrollView>
     </View>
   )
 }

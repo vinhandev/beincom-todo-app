@@ -19,7 +19,7 @@ import { EnhancedTopTabNavigator } from "./TopTabNavigator"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
-export const navigationRef = createNavigationContainerRef()
+export const navigationRef = createNavigationContainerRef<RootStackParamList>()
 
 function ApplicationNavigator() {
   const { variant, navigationTheme } = useTheme()

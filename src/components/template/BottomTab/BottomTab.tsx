@@ -143,6 +143,11 @@ export default function BottomTab({
     return data
   }
 
+  async function handleNavigateCategory(category: Category) {
+    navigationRef.navigate(category.title, { categoryId: category.id })
+    bottomSheetListsModalRef.current?.close()
+  }
+
   return (
     <BottomSheetModalProvider>
       <View style={styles.container}>{children}</View>
@@ -152,7 +157,11 @@ export default function BottomTab({
         <Button title="Open Filters" onPress={handleFilter} />
       </View>
       <AddCategoryBottomSheet ref={addingListRef} onAddCategory={handleAddDatabaseList} />
-      <AllListBottomSheet ref={bottomSheetListsModalRef} onOpenAddListBottomSheet={handleAddList} />
+      <AllListBottomSheet
+        ref={bottomSheetListsModalRef}
+        onOpenAddListBottomSheet={handleAddList}
+        onNavigateCategory={handleNavigateCategory}
+      />
       <AddTaskBottomSheet ref={bottomSheetAddTaskModalRef} onAddTask={handleAddDatabaseTask} />
       <FilterBottomSheet
         ref={bottomSheetFilterModalRef}
