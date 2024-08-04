@@ -1,4 +1,4 @@
-import { PropsWithChildren, useCallback, useMemo, useRef } from "react"
+import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react"
 import { Alert, Button, Keyboard, Text, TextInput, View } from "react-native"
 
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
@@ -36,6 +36,7 @@ export default function BottomTab({
   children: React.ReactNode
   addingListRef: React.RefObject<BottomSheetModal>
 }) {
+  const [currentCategoryId, setCurrentCategoryId] = useState<string>("")
   const { components, backgrounds, borders } = useTheme()
   // ref
 
@@ -71,10 +72,17 @@ export default function BottomTab({
   }
 
   function handleFilter() {
+    const currentRoute = navigationRef.current?.getCurrentRoute()
+    const { categoryId } = currentRoute?.params as { categoryId: string }
+    if (!currentRoute) {
+      throw new Error("Don't have current route")
+    }
+    setCurrentCategoryId(categoryId)
     bottomSheetFilterModalRef.current?.present()
   }
 
   async function handleDeleteAllCompletedTasks() {
+    console.log("Delete all completed tasks")
     Alert.alert("Confirm", "Are you sure you want to delete all completed tasks?", [
       {
         text: "Cancel",
@@ -208,6 +216,7 @@ export default function BottomTab({
       />
       <AddTaskBottomSheet ref={bottomSheetAddTaskModalRef} onAddTask={handleAddDatabaseTask} />
       <FilterBottomSheet
+        currentCategoryId={currentCategoryId}
         ref={bottomSheetFilterModalRef}
         onDeleteAllCompletedTasks={handleDeleteAllCompletedTasks}
         onDeleteCategory={handleDeleteCategory}
