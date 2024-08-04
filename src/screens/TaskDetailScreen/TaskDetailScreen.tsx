@@ -1,9 +1,13 @@
 import { useRef, useState } from "react"
-import { Button, Keyboard, Text, TextInput, View } from "react-native"
+import { Alert, Button, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native"
 
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
 import { withObservables } from "@nozbe/watermelondb/react"
 import { useNavigation, useRoute } from "@react-navigation/native"
+
+import { useTheme } from "@/theme"
+import { EditIcon } from "@/theme/assets/svg"
+import ArrowIcon from "@/theme/assets/svg/ArrowIcon"
 
 import Task from "@/models/task.model"
 import { navigationRef } from "@/navigators/Application"
@@ -14,6 +18,7 @@ function TaskItem({ task }: { task: Task }) {
   const bottomSheetRef = useRef<BottomSheet>(null)
   const { mutate: updateTask } = useUpdateTask()
   const { mutate: deleteTask } = useDeleteTask()
+  const { fonts, gutters, backgrounds } = useTheme()
 
   function handleOpen() {
     bottomSheetRef.current?.expand()
@@ -46,26 +51,78 @@ function TaskItem({ task }: { task: Task }) {
   }
 
   async function handleDelete() {
-    await deleteTask(task.id, {
-      onSuccess: () => {
-        console.log("success task")
-        Keyboard.dismiss()
-        if (navigationRef.canGoBack()) {
-          navigationRef.goBack()
-        }
-      },
-      onError: (error) => {
-        console.error(error)
-      },
-    })
+    Alert.alert(
+      "Delete Task",
+      "Are you sure you want to delete this task?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: async () => {
+            await deleteTask(task.id, {
+              onSuccess: () => {
+                console.log("success task")
+                Keyboard.dismiss()
+                if (navigationRef.canGoBack()) {
+                  navigationRef.goBack()
+                }
+              },
+              onError: (error) => {
+                console.error(error)
+              },
+            })
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: false },
+    )
   }
 
   return (
     <View style={{ flex: 1 }}>
-      <Text>Name</Text>
-      <Text>{task.title}</Text>
-      <Button title="Rename Task" onPress={handleOpen} />
-      <Button title="Delete" onPress={handleDelete} />
+      <View>
+        <View style={[gutters.paddingHorizontal_16, gutters.paddingVertical_12, backgrounds.white]}>
+          <Text style={[fonts.gray700, fonts.family_700, fonts.size_16]}>Basic Info</Text>
+          <View style={gutters.paddingTop_16}>
+            <Text style={[fonts.gray700, fonts.family_400, fonts.size_12]}>Name</Text>
+            <Text style={[fonts.gray700, fonts.family_700, fonts.size_16]}>{task.title}</Text>
+          </View>
+          <TouchableOpacity
+            onPress={handleOpen}
+            style={[
+              {
+                position: "absolute",
+                right: 16,
+                top: 12,
+                borderRadius: 4,
+                width: 30,
+                height: 30,
+                justifyContent: "center",
+                alignItems: "center",
+              },
+              backgrounds.gray50,
+            ]}
+          >
+            <EditIcon />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity
+          onPress={handleDelete}
+          style={[
+            gutters.marginTop_12,
+            backgrounds.white,
+            gutters.paddingHorizontal_16,
+            gutters.paddingVertical_12,
+          ]}
+        >
+          <Text style={[fonts.red500, fonts.family_700, fonts.size_16]}>Delete Task</Text>
+        </TouchableOpacity>
+      </View>
       <BottomSheet
         enablePanDownToClose
         index={-1}
@@ -91,11 +148,40 @@ const TaskDetail = enhance(TaskItem)
 export default function TaskDetailScreen() {
   const navigation = useNavigation()
   const { taskId } = useRoute().params as { taskId: string }
+  const { backgrounds, components, gutters, fonts } = useTheme()
 
   return (
-    <View style={{ flex: 1 }}>
-      <Button title="Back" onPress={() => navigation.goBack()} />
-      <TaskDetail taskId={taskId} />
+    <View style={[{ flex: 1 }, backgrounds.gray500]}>
+      <View
+        style={[
+          {
+            width: "100%",
+            height: 50,
+            flexDirection: "row",
+            alignItems: "center",
+          },
+          backgrounds.white,
+          components.shadow,
+        ]}
+      >
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => navigation.goBack()}
+          style={{
+            transform: [{ rotate: "90deg" }],
+            width: 44,
+            height: 44,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ArrowIcon width={18} height={18} />
+        </TouchableOpacity>
+        <Text style={[fonts.family_700, fonts.black, fonts.size_16]}>Task Detail</Text>
+      </View>
+      <View style={[gutters.marginTop_12, { flex: 1 }]}>
+        <TaskDetail taskId={taskId} />
+      </View>
     </View>
   )
 }

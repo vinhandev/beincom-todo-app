@@ -134,14 +134,19 @@ function TaskList({
           <View>
             <TouchableOpacity
               onPress={() => setHide(!isHide)}
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 10,
+              }}
             >
-              <View style={{ marginTop: 5, transform: [{ rotate: isHide ? "-90deg" : "0deg" }] }}>
-                <ArrowIcon width={14} height={14} />
-              </View>
               <Text
                 style={[fonts.family_700, fonts.black, fonts.size_16, gutters.paddingVertical_16]}
               >{`Completed Tasks (${completedTasks.length})`}</Text>
+              <View style={{ marginTop: 5, transform: [{ rotate: isHide ? "180deg" : "0deg" }] }}>
+                <ArrowIcon width={14} height={14} />
+              </View>
             </TouchableOpacity>
             <View style={{ display: isHide ? "none" : "flex" }}>
               <FlatList
