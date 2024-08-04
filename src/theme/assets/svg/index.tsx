@@ -1,2 +1,5 @@
 export { default as PlusIcon } from "./PlusIcon"
 export { default as OptionIcon } from "./OptionIcon"
+export { default as SettingIcon } from "./SettingIcon"
+export { default as MenuIcon } from "./MenuIcon"
+export { default as LogoIcon } from "./LogoIcon"

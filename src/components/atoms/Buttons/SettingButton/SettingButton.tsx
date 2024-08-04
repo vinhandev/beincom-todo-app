@@ -1,16 +1,16 @@
 import { TouchableOpacity } from "react-native"
 
 import { useTheme } from "@/theme"
-import { MenuIcon } from "@/theme/assets/svg"
+import { SettingIcon } from "@/theme/assets/svg"
 
 type Props = {
   onPress: () => void
 }
-export default function OpenMenuButton({ onPress }: Props) {
+export default function SettingButton({ onPress }: Props) {
   const { colors } = useTheme()
   return (
     <TouchableOpacity onPress={onPress}>
-      <MenuIcon width={22} height={22} color={colors.gray700} />
+      <SettingIcon width={24} height={24} color={colors.gray700} />
     </TouchableOpacity>
   )
 }

@@ -103,31 +103,15 @@ export default function TaskScreen() {
   const { params } = useRoute<any>()
   const categoryId = params?.categoryId ?? ""
 
-  const sortMode = useUserStore((state) => state.sortMode)
-
   const { fonts } = useTheme()
-
-  const animatedValue = useSharedValue(0)
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      opacity: animatedValue.value,
-    }
-  })
 
   function handleNavigateTaskDetail(taskId: string) {
     navigation.navigate("TaskDetail", { taskId })
   }
 
-  useEffect(() => {
-    animatedValue.value = withTiming(1, { duration: 1000 })
-  }, [])
-
   return (
     <View>
-      <Animated.Text style={[fonts.size_32, fonts.family_700, fonts.black, animatedStyle]}>
-        Task
-      </Animated.Text>
+      <Text style={[fonts.size_32, fonts.family_700, fonts.black]}>Task</Text>
       <List categoryId={categoryId} onNavigateTaskDetail={handleNavigateTaskDetail} />
     </View>
   )
