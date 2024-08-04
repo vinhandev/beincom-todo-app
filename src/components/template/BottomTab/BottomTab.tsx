@@ -23,6 +23,9 @@ import { styles } from "./BottomTab.styles"
 import AddCategoryBottomSheet from "./components/AddBottomSheet/AddCategoryBottomSheet"
 import AddTaskBottomSheet from "./components/AddTaskBottomSheet/AddTaskBottomSheet"
 import AllListBottomSheet from "./components/AllListBottomSheet/AllListBottomSheet"
+import AddTaskButton from "./components/Buttons/AddTaskButton/AddTaskButton"
+import OpenMenuButton from "./components/Buttons/OpenMenuButton/OpenMenuButton"
+import OpenOptionButton from "./components/Buttons/OpenOptionButton/OpenOptionButton"
 import FilterBottomSheet from "./components/FilterBottomSheet/FilterBottomSheet"
 import RenameCategorySheet from "./components/RenameCategorySheet/RenameCategorySheet"
 
@@ -239,9 +242,9 @@ export default function BottomTab({
     <BottomSheetModalProvider>
       <View style={styles.container}>{children}</View>
       <View style={[styles.tab, components.shadowBottomTab, backgrounds.white, borders.gray500]}>
-        <Button title="Open List" onPress={handleLists} />
-        <Button title="Add Task" onPress={handleAddTask} />
-        <Button title="Open Filters" onPress={handleFilter} />
+        <OpenMenuButton onPress={handleLists} />
+        <AddTaskButton onPress={handleAddTask} />
+        <OpenOptionButton onPress={handleFilter} />
       </View>
       <AddCategoryBottomSheet ref={addingListRef} onAddCategory={handleAddDatabaseList} />
       <AllListBottomSheet
