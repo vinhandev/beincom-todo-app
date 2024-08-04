@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react"
-import { Button, Text, View } from "react-native"
+import { Button, ScrollView, Text, View } from "react-native"
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet"
 import { Query } from "@nozbe/watermelondb"
@@ -43,31 +43,20 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
 
   function TabBarHeader(tabBarProps: MaterialTopTabBarProps & { categories: Category[] }) {
     return (
-      <View
-        style={[
-          {
-            flexDirection: "row",
-          },
-        ]}
-      >
-        <View style={{ flex: 1 }}>
-          <TabBar
-            {...tabBarProps}
-            scrollEnabled
-            bounces
-            navigationState={tabBarProps.state}
-            indicatorStyle={{ backgroundColor: "#782CC7" }}
-            style={{ backgroundColor: "white" }}
-            renderLabel={(props) => {
-              const name =
-                tabBarProps.categories.find((item) => item.id === props.route.name)?.title ?? ""
-
-              return <Text>{name}</Text>
-            }}
-          />
-        </View>
-        <Button title="Plus" onPress={handleAddNewList} />
-      </View>
+      <TabBar
+        {...tabBarProps}
+        scrollEnabled
+        bounces
+        navigationState={tabBarProps.state}
+        indicatorStyle={{ backgroundColor: "#782CC7" }}
+        style={{ backgroundColor: "white" }}
+        tabStyle={{ width: 150 }}
+        renderLabel={(props) => {
+          const name =
+            tabBarProps.categories.find((item) => item.id === props.route.name)?.title ?? ""
+          return <Text>{name}</Text>
+        }}
+      />
     )
   }
 
@@ -109,7 +98,7 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
             >
               {categories.map((category) => (
                 <Tab.Screen
-                  key={`${category.id}${category.title}`}
+                  key={category.id}
                   name={category.id}
                   component={TaskScreen}
                   initialParams={{ categoryId: category.id }}
