@@ -13,7 +13,7 @@ import type { RootStackParamList } from "@/types/navigation"
 
 import { useTheme } from "@/theme"
 
-import { LoginScreen, ProfileScreen, SettingScreen } from "@/screens"
+import { LoginScreen, ProfileScreen, SettingScreen, TaskDetailScreen } from "@/screens"
 
 import { EnhancedTopTabNavigator } from "./TopTabNavigator"
 
@@ -27,11 +27,15 @@ function ApplicationNavigator() {
   return (
     <SafeAreaProvider>
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        <Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+          key={variant}
+          screenOptions={{ headerShown: false, animation: "slide_from_right" }}
+        >
           <Stack.Screen name="TopTab" component={EnhancedTopTabNavigator} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="Setting" component={SettingScreen} />
+          <Stack.Screen name="TaskDetail" component={TaskDetailScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

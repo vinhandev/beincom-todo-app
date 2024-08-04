@@ -4,6 +4,7 @@ export type RootStackParamList = {
   TopTab: undefined
   Login: undefined
   Profile: undefined
+  TaskDetail: undefined
   Setting: undefined
 }
 
