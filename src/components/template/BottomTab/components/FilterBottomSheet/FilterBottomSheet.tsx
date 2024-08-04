@@ -8,7 +8,8 @@ import useUserStore, { sortModeType } from "@/store/useUserStore"
 import { styles } from "../../BottomTab.styles"
 
 type Props = {
-  onDeleteAllCompletedTasks: () => void
+  onDeleteAllCompletedTasks: () => Promise<void>
+  onDeleteCategory: () => Promise<void>
   onSetSortMode: (type: sortModeType) => void
 }
 
@@ -31,7 +32,7 @@ const SortTypeList: {
 ]
 
 const FilterBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({ onDeleteAllCompletedTasks, onSetSortMode }, ref) => {
+  ({ onDeleteAllCompletedTasks, onDeleteCategory, onSetSortMode }, ref) => {
     const sortMode = useUserStore((state) => state.sortMode)
     return (
       <BottomSheetModal ref={ref} index={0} snapPoints={["50%"]}>
@@ -46,6 +47,8 @@ const FilterBottomSheet = forwardRef<BottomSheetModal, Props>(
                 </TouchableOpacity>
               )}
             />
+            <Button title="Rename category" onPress={onDeleteAllCompletedTasks} />
+            <Button title="Delete category" onPress={onDeleteCategory} />
             <Button title="Delete all completed tasks" onPress={onDeleteAllCompletedTasks} />
           </View>
         </BottomSheetView>

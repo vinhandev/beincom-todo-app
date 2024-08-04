@@ -1,5 +1,5 @@
 import { PropsWithChildren, useCallback, useMemo, useRef } from "react"
-import { Button, Keyboard, Text, TextInput, View } from "react-native"
+import { Alert, Button, Keyboard, Text, TextInput, View } from "react-native"
 
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
 import { Q } from "@nozbe/watermelondb"
@@ -14,7 +14,13 @@ import useUserStore from "@/store/useUserStore"
 import { database } from "@/models"
 import Category from "@/models/category.model"
 import { navigationRef } from "@/navigators/Application"
-import { CategoryDB, CategoryPage, findList, useAddCategory } from "@/services/queries/category"
+import {
+  CategoryDB,
+  CategoryPage,
+  findList,
+  useAddCategory,
+  useDeleteCategory,
+} from "@/services/queries/category"
 import { TaskDB, useAddTask } from "@/services/queries/task"
 
 import { styles } from "./BottomTab.styles"
@@ -49,6 +55,7 @@ export default function BottomTab({
 
   // functions
   const { mutate } = useAddCategory()
+  const { mutate: deleteCategory } = useDeleteCategory()
   const { mutate: addTask } = useAddTask()
 
   function handleAddTask() {
@@ -68,24 +75,58 @@ export default function BottomTab({
   }
 
   async function handleDeleteAllCompletedTasks() {
-    const route: { params: { categoryId: string } } =
-      navigationRef.current?.getCurrentRoute() as any
-    if (!route || !route.params) {
-      throw new Error("Route is required")
-    }
-    const tasks = await TaskDB.query(
-      Q.where("is_completed", true),
-      Q.where("category_id", route.params.categoryId),
-    ).fetch()
-    await database.write(async () => {
-      await database.batch(
-        ...tasks.map((task) => {
-          task.markAsDeleted()
-          return null
-        }),
-      )
-    })
-    bottomSheetFilterModalRef.current?.close()
+    Alert.alert("Confirm", "Are you sure you want to delete all completed tasks?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel"),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: async () => {
+          const route: { params: { categoryId: string } } =
+            navigationRef.current?.getCurrentRoute() as any
+          if (!route || !route.params) {
+            throw new Error("Route is required")
+          }
+          const tasks = await TaskDB.query(
+            Q.where("is_completed", true),
+            Q.where("category_id", route.params.categoryId),
+          ).fetch()
+          await database.write(async () => {
+            await database.batch(
+              ...tasks.map((task) => {
+                task.markAsDeleted()
+                return null
+              }),
+            )
+          })
+          bottomSheetFilterModalRef.current?.close()
+        },
+      },
+    ])
+  }
+
+  async function handleDeleteCategory() {
+    Alert.alert("Confirm", "Are you sure you want to delete this category?", [
+      {
+        text: "Cancel",
+        onPress: () => console.log("Cancel"),
+        style: "cancel",
+      },
+      {
+        text: "OK",
+        onPress: async () => {
+          const route: { params: { category: string; categoryId: string } } =
+            navigationRef.current?.getCurrentRoute() as any
+          if (!route || !route.params) {
+            throw new Error("Route is required")
+          }
+          await deleteCategory(route.params.categoryId)
+          bottomSheetFilterModalRef.current?.close()
+        },
+      },
+    ])
   }
 
   async function handleAddDatabaseList(text: string) {
@@ -169,6 +210,7 @@ export default function BottomTab({
       <FilterBottomSheet
         ref={bottomSheetFilterModalRef}
         onDeleteAllCompletedTasks={handleDeleteAllCompletedTasks}
+        onDeleteCategory={handleDeleteCategory}
         onSetSortMode={(sortMode) => {
           setSortMode(sortMode)
           bottomSheetFilterModalRef.current?.close()
