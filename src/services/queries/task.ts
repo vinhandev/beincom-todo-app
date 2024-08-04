@@ -95,8 +95,11 @@ export const useInfiniteTasks = (params: TaskParams, options = {}) => {
 }
 
 export const updateTask = async (payload: TaskType) => {
+  console.log("updateTask", payload.id, payload.categoryId, payload)
   const category = await findList(payload.categoryId ?? "")
   const task = await findTask(payload.id ?? "")
+
+  console.log("updateTask", payload, task, category)
 
   const result = await database.write(async () => {
     return await task.update((entity) => {

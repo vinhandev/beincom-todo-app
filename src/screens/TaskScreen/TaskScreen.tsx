@@ -10,21 +10,31 @@ import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-na
 import { useTheme } from "@/theme"
 
 import Task from "@/models/task.model"
-import { TaskDB, TaskType } from "@/services/queries/task"
+import { TaskDB, TaskType, useUpdateTask } from "@/services/queries/task"
 
 import { styles } from "./TaskScreen.style"
 
 function TaskList({ tasks }: { tasks: Task[] }) {
-  function handlePressChecked(id: string) {
-    const newTaskList = tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          isFinished: !task.is_completed,
-        }
-      }
-      return task
-    })
+  let unCompletedTasks = tasks.filter((task) => !task.is_completed)
+  let completedTasks = tasks.filter((task) => task.is_completed)
+  const { mutate } = useUpdateTask()
+
+  async function updateTaskStatus(task: Task) {
+    await mutate(
+      {
+        isCompleted: !task.is_completed,
+        category: task.category,
+        title: task.title,
+        categoryId: task.category.id,
+        id: task.id,
+      },
+      {
+        onSuccess: () => {},
+        onError: (error) => {
+          console.error(error, "category", task)
+        },
+      },
+    )
   }
 
   const renderTaskItem = ({ item }: { item: Task }) => {
@@ -32,7 +42,7 @@ function TaskList({ tasks }: { tasks: Task[] }) {
       <View style={styles.containerTask}>
         <Button
           title={item.is_completed ? "Unfinish" : "Finish"}
-          onPress={() => handlePressChecked(item.id ?? "")}
+          onPress={() => updateTaskStatus(item)}
         />
         <Text style={{ textDecorationLine: item.is_completed ? "line-through" : "none" }}>
           {item.title}
@@ -41,7 +51,19 @@ function TaskList({ tasks }: { tasks: Task[] }) {
     )
   }
   return (
-    <FlatList data={tasks} renderItem={renderTaskItem} keyExtractor={(item) => item.id ?? ""} />
+    <View>
+      <FlatList
+        data={unCompletedTasks}
+        renderItem={renderTaskItem}
+        keyExtractor={(item) => item.id ?? ""}
+      />
+      <Text>Completed Tasks</Text>
+      <FlatList
+        data={completedTasks}
+        renderItem={renderTaskItem}
+        keyExtractor={(item) => item.id ?? ""}
+      />
+    </View>
   )
 }
 
@@ -68,7 +90,6 @@ export default function TaskScreen() {
       categoryId: "",
     },
   ]
-  const [taskList, setTaskList] = useState<TaskType[]>(initTask)
   const { fonts } = useTheme()
 
   const animatedValue = useSharedValue(0)
