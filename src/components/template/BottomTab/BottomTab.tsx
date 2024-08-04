@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react"
-import { Alert, Button, View } from "react-native"
+import { Alert, Button, TextInput, View } from "react-native"
 
 import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { Q } from "@nozbe/watermelondb"
@@ -44,6 +44,7 @@ export default function BottomTab({
   const bottomSheetListsModalRef = useRef<BottomSheetModal>(null)
   const bottomSheetFilterModalRef = useRef<BottomSheetModal>(null)
   const bottomSheetRenameCategoryModalRef = useRef<BottomSheetModal>(null)
+  const textInputRef = useRef<TextInput>()
 
   // variables
   const setSortMode = useUserStore((state) => state.setSortMode)
@@ -58,6 +59,9 @@ export default function BottomTab({
 
   function handleAddTask() {
     bottomSheetAddTaskModalRef.current?.present()
+
+    console.log(textInputRef)
+    textInputRef.current?.focus()
   }
   function handleAddList() {
     bottomSheetListsModalRef.current?.close()
@@ -225,7 +229,7 @@ export default function BottomTab({
   }
 
   async function handleNavigateCategory(category: Category) {
-    navigationRef.navigate(category.title, { categoryId: category.id })
+    navigationRef.navigate(category.id as any, { categoryId: category.id })
     bottomSheetListsModalRef.current?.close()
   }
 
@@ -252,7 +256,11 @@ export default function BottomTab({
         onOpenAddListBottomSheet={handleAddList}
         onNavigateCategory={handleNavigateCategory}
       />
-      <AddTaskBottomSheet ref={bottomSheetAddTaskModalRef} onAddTask={handleAddDatabaseTask} />
+      <AddTaskBottomSheet
+        ref={bottomSheetAddTaskModalRef}
+        onAddTask={handleAddDatabaseTask}
+        textInputRef={textInputRef as any}
+      />
       <RenameCategorySheet
         ref={bottomSheetRenameCategoryModalRef}
         onRenameCategory={handleUpdateCategory}

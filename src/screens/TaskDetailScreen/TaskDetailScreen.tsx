@@ -1,7 +1,11 @@
-import { useRef, useState } from "react"
+import { useCallback, useRef, useState } from "react"
 import { Alert, Button, Keyboard, Text, TextInput, TouchableOpacity, View } from "react-native"
 
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet"
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet"
 import { withObservables } from "@nozbe/watermelondb/react"
 import { useNavigation, useRoute } from "@react-navigation/native"
 
@@ -18,7 +22,7 @@ function TaskItem({ task }: { task: Task }) {
   const bottomSheetRef = useRef<BottomSheet>(null)
   const { mutate: updateTask } = useUpdateTask()
   const { mutate: deleteTask } = useDeleteTask()
-  const { fonts, gutters, backgrounds } = useTheme()
+  const { fonts, gutters, backgrounds, components } = useTheme()
 
   function handleOpen() {
     bottomSheetRef.current?.expand()
@@ -83,8 +87,15 @@ function TaskItem({ task }: { task: Task }) {
     )
   }
 
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
+    ),
+    [],
+  )
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, paddingTop: 12 }}>
       <View>
         <View style={[gutters.paddingHorizontal_16, gutters.paddingVertical_12, backgrounds.white]}>
           <Text style={[fonts.gray700, fonts.family_700, fonts.size_16]}>Basic Info</Text>
@@ -125,14 +136,25 @@ function TaskItem({ task }: { task: Task }) {
       </View>
       <BottomSheet
         enablePanDownToClose
+        backdropComponent={renderBackdrop}
         index={-1}
         snapPoints={["50%"]}
         onClose={handleClose}
         ref={bottomSheetRef}
       >
-        <BottomSheetView style={{ flex: 1 }}>
-          <TextInput value={taskName} onChangeText={setTaskName} />
-          <Button title="Rename" onPress={handleRename} />
+        <BottomSheetView
+          style={[{ flex: 1, gap: 12 }, gutters.paddingHorizontal_16, gutters.paddingVertical_12]}
+        >
+          <Text style={components.header}>Rename Task</Text>
+          <TextInput
+            placeholder="Enter task title"
+            style={components.textInput}
+            value={taskName}
+            onChangeText={setTaskName}
+          />
+          <TouchableOpacity onPress={handleRename} style={components.button}>
+            <Text style={components.textButton}>Rename Task</Text>
+          </TouchableOpacity>
         </BottomSheetView>
       </BottomSheet>
     </View>
@@ -179,7 +201,7 @@ export default function TaskDetailScreen() {
         </TouchableOpacity>
         <Text style={[fonts.family_700, fonts.black, fonts.size_16]}>Task Detail</Text>
       </View>
-      <View style={[gutters.marginTop_12, { flex: 1 }]}>
+      <View style={{ flex: 1 }}>
         <TaskDetail taskId={taskId} />
       </View>
     </View>

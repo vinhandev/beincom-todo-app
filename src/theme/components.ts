@@ -4,7 +4,7 @@ import type { ComponentTheme } from "@/types/theme/theme"
 
 interface AllStyle extends Record<string, AllStyle | ImageStyle | TextStyle | ViewStyle> {}
 
-export default ({ colors, backgrounds, fonts }: ComponentTheme) => {
+export default ({ colors, backgrounds, fonts, gutters }: ComponentTheme) => {
   return {
     shadow: {
       shadowColor: colors.black,
@@ -27,6 +27,42 @@ export default ({ colors, backgrounds, fonts }: ComponentTheme) => {
       shadowRadius: 8.3,
 
       elevation: 13,
+    },
+    textInput: {
+      borderWidth: 0.5,
+      borderColor: colors.gray700,
+      borderRadius: 5,
+      padding: 10,
+    },
+    button: {
+      backgroundColor: colors.purple700,
+      borderRadius: 8,
+      ...gutters.paddingHorizontal_16,
+      ...gutters.paddingVertical_12,
+    },
+    buttonDisabled: {
+      backgroundColor: colors.purple200,
+      borderRadius: 8,
+      ...gutters.paddingHorizontal_16,
+      ...gutters.paddingVertical_12,
+      opacity: 0.4,
+    },
+    textButton: {
+      ...fonts.white,
+      ...fonts.family_700,
+      ...fonts.size_16,
+      ...fonts.alignCenter,
+    },
+    textButtonDisabled: {
+      ...fonts.gray700,
+      ...fonts.family_700,
+      ...fonts.size_16,
+      ...fonts.alignCenter,
+    },
+    header: {
+      ...fonts.black,
+      ...fonts.family_700,
+      ...fonts.size_16,
     },
   } as const satisfies AllStyle
 }

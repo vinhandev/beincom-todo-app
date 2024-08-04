@@ -1,7 +1,12 @@
-import { forwardRef, useState } from "react"
+import { forwardRef, useCallback, useState } from "react"
 import { Button, Text, TextInput, View } from "react-native"
 
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet"
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet"
 
 import { styles } from "./RenameCategorySheet.style"
 
@@ -11,8 +16,14 @@ type Props = {
 
 const RenameCategorySheet = forwardRef<BottomSheetModal, Props>(({ onRenameCategory }, ref) => {
   const [title, setTitle] = useState("")
+  const renderBackdrop = useCallback(
+    (props: BottomSheetBackdropProps) => (
+      <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
+    ),
+    [],
+  )
   return (
-    <BottomSheetModal ref={ref} index={0} snapPoints={["50%"]}>
+    <BottomSheetModal backdropComponent={renderBackdrop} ref={ref} index={0} snapPoints={["50%"]}>
       <BottomSheetView style={styles.container}>
         <View style={styles.tab}>
           <Text>Rename List BottomSheet</Text>

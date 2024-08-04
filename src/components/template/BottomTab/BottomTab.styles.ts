@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
   },
   bottomSheet: {
     flex: 1,
-    backgroundColor: "red",
   },
   tab: {
     height: 70,
@@ -22,5 +21,6 @@ export const styles = StyleSheet.create({
   tabContent: {
     flex: 1,
     backgroundColor: "#ffffff",
+    gap: 12,
   },
 })
