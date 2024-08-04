@@ -2,6 +2,7 @@ import { PropsWithChildren, useCallback, useMemo, useRef } from "react"
 import { Button, Keyboard, Text, TextInput, View } from "react-native"
 
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
+import { Q } from "@nozbe/watermelondb"
 import { withObservables } from "@nozbe/watermelondb/react"
 import { Route } from "@react-navigation/native"
 import { InfiniteData, QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
@@ -12,12 +13,13 @@ import { database } from "@/models"
 import Category from "@/models/category.model"
 import { navigationRef } from "@/navigators/Application"
 import { CategoryDB, CategoryPage, findList, useAddCategory } from "@/services/queries/category"
-import { useAddTask } from "@/services/queries/task"
+import { TaskDB, useAddTask } from "@/services/queries/task"
 
 import { styles } from "./BottomTab.styles"
 import AddCategoryBottomSheet from "./components/AddBottomSheet/AddCategoryBottomSheet"
 import AddTaskBottomSheet from "./components/AddTaskBottomSheet/AddTaskBottomSheet"
 import AllListBottomSheet from "./components/AllListBottomSheet/AllListBottomSheet"
+import FilterBottomSheet from "./components/FilterBottomSheet/FilterBottomSheet"
 
 export default function BottomTab({
   children,
@@ -60,6 +62,27 @@ export default function BottomTab({
 
   function handleFilter() {
     bottomSheetFilterModalRef.current?.present()
+  }
+
+  async function handleDeleteAllCompletedTasks() {
+    const route: { params: { categoryId: string } } =
+      navigationRef.current?.getCurrentRoute() as any
+    if (!route || !route.params) {
+      throw new Error("Route is required")
+    }
+    const tasks = await TaskDB.query(
+      Q.where("is_completed", true),
+      Q.where("category_id", route.params.categoryId),
+    ).fetch()
+    await database.write(async () => {
+      await database.batch(
+        ...tasks.map((task) => {
+          task.markAsDeleted()
+          return null
+        }),
+      )
+    })
+    bottomSheetFilterModalRef.current?.close()
   }
 
   async function handleAddDatabaseList(text: string) {
@@ -131,19 +154,10 @@ export default function BottomTab({
       <AddCategoryBottomSheet ref={addingListRef} onAddCategory={handleAddDatabaseList} />
       <AllListBottomSheet ref={bottomSheetListsModalRef} onOpenAddListBottomSheet={handleAddList} />
       <AddTaskBottomSheet ref={bottomSheetAddTaskModalRef} onAddTask={handleAddDatabaseTask} />
-
-      <BottomSheetModal
+      <FilterBottomSheet
         ref={bottomSheetFilterModalRef}
-        index={0}
-        snapPoints={snapPoints}
-        onChange={handleSheetChanges}
-      >
-        <BottomSheetView style={styles.bottomSheet}>
-          <View style={styles.tabContent}>
-            <Text>Filter tasks options BottomSheet</Text>
-          </View>
-        </BottomSheetView>
-      </BottomSheetModal>
+        onDeleteAllCompletedTasks={handleDeleteAllCompletedTasks}
+      />
     </BottomSheetModalProvider>
   )
 }
