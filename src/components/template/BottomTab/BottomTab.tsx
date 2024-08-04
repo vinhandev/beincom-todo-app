@@ -1,11 +1,8 @@
-import { PropsWithChildren, useCallback, useMemo, useRef, useState } from "react"
-import { Alert, Button, Keyboard, Text, TextInput, View } from "react-native"
+import { useCallback, useMemo, useRef, useState } from "react"
+import { Alert, Button, View } from "react-native"
 
-import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from "@gorhom/bottom-sheet"
+import { BottomSheetModal, BottomSheetModalProvider } from "@gorhom/bottom-sheet"
 import { Q } from "@nozbe/watermelondb"
-import { withObservables } from "@nozbe/watermelondb/react"
-import { Route } from "@react-navigation/native"
-import { InfiniteData, QueryObserverResult, RefetchOptions } from "@tanstack/react-query"
 
 import { useTheme } from "@/theme"
 
@@ -14,13 +11,7 @@ import useUserStore from "@/store/useUserStore"
 import { database } from "@/models"
 import Category from "@/models/category.model"
 import { navigationRef } from "@/navigators/Application"
-import {
-  CategoryDB,
-  CategoryPage,
-  findList,
-  useAddCategory,
-  useDeleteCategory,
-} from "@/services/queries/category"
+import { findList, useAddCategory, useDeleteCategory } from "@/services/queries/category"
 import { TaskDB, useAddTask } from "@/services/queries/task"
 
 import { styles } from "./BottomTab.styles"
@@ -45,14 +36,9 @@ export default function BottomTab({
   const bottomSheetFilterModalRef = useRef<BottomSheetModal>(null)
 
   // variables
-  const snapPoints = useMemo(() => ["50%"], [])
-  const snapPointsInput = useMemo(() => ["50%"], [])
   const setSortMode = useUserStore((state) => state.setSortMode)
 
   // callbacks
-  const handleSheetChanges = useCallback((index: number) => {
-    console.log("handleSheetChanges", index)
-  }, [])
 
   // functions
   const { mutate } = useAddCategory()

@@ -91,7 +91,6 @@ const DeleteAllCompletedTasks = enhanceDeleteAllCompletedTasks(
 const FilterBottomSheet = forwardRef<BottomSheetModal, Props>(
   ({ currentCategoryId, onDeleteAllCompletedTasks, onDeleteCategory, onSetSortMode }, ref) => {
     const sortMode = useUserStore((state) => state.sortMode)
-
     console.log("currentCategoryId", currentCategoryId)
 
     return (

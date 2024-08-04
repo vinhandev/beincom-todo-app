@@ -28,7 +28,7 @@ function TaskList({
   const sortMode = useUserStore((state) => state.sortMode)
   const formattedTasks =
     sortMode === "default"
-      ? tasks.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
+      ? tasks
       : sortMode === "asc"
         ? tasks.sort((a, b) => (a.title > b.title ? 1 : -1))
         : tasks.sort((a, b) => (a.title < b.title ? 1 : -1))
@@ -91,7 +91,7 @@ function TaskList({
 }
 
 const enhance = withObservables([], ({ categoryId }: { categoryId: string }) => ({
-  tasks: TaskDB.query(Q.on("categories", "id", categoryId)),
+  tasks: TaskDB.query(Q.on("categories", "id", categoryId), Q.sortBy("created_at", Q.asc)),
 }))
 
 const List = enhance(TaskList)
@@ -100,6 +100,8 @@ export default function TaskScreen() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>()
   const { params } = useRoute<any>()
   const categoryId = params?.categoryId ?? ""
+
+  const sortMode = useUserStore((state) => state.sortMode)
 
   const { fonts } = useTheme()
 
