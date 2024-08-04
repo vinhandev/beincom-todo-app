@@ -13,7 +13,9 @@ import { useTheme } from "@/theme"
 
 import useUserStore from "@/store/useUserStore"
 
+import Category from "@/models/category.model"
 import Task from "@/models/task.model"
+import { CategoryDB } from "@/services/queries/category"
 import { TaskDB, TaskType, useUpdateTask } from "@/services/queries/task"
 
 import { styles } from "./TaskScreen.style"

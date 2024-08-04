@@ -6,12 +6,17 @@ import { Q } from "@nozbe/watermelondb"
 
 import { useTheme } from "@/theme"
 
-import useUserStore from "@/store/useUserStore"
+import useUserStore, { sortModeType } from "@/store/useUserStore"
 
 import { database } from "@/models"
 import Category from "@/models/category.model"
 import { navigationRef } from "@/navigators/Application"
-import { findList, useAddCategory, useDeleteCategory } from "@/services/queries/category"
+import {
+  findList,
+  useAddCategory,
+  useDeleteCategory,
+  useUpdateCategory,
+} from "@/services/queries/category"
 import { TaskDB, useAddTask } from "@/services/queries/task"
 
 import { styles } from "./BottomTab.styles"
@@ -19,6 +24,7 @@ import AddCategoryBottomSheet from "./components/AddBottomSheet/AddCategoryBotto
 import AddTaskBottomSheet from "./components/AddTaskBottomSheet/AddTaskBottomSheet"
 import AllListBottomSheet from "./components/AllListBottomSheet/AllListBottomSheet"
 import FilterBottomSheet from "./components/FilterBottomSheet/FilterBottomSheet"
+import RenameCategorySheet from "./components/RenameCategorySheet/RenameCategorySheet"
 
 export default function BottomTab({
   children,
@@ -34,6 +40,7 @@ export default function BottomTab({
   const bottomSheetAddTaskModalRef = useRef<BottomSheetModal>(null)
   const bottomSheetListsModalRef = useRef<BottomSheetModal>(null)
   const bottomSheetFilterModalRef = useRef<BottomSheetModal>(null)
+  const bottomSheetRenameCategoryModalRef = useRef<BottomSheetModal>(null)
 
   // variables
   const setSortMode = useUserStore((state) => state.setSortMode)
@@ -41,9 +48,10 @@ export default function BottomTab({
   // callbacks
 
   // functions
-  const { mutate } = useAddCategory()
+  const { mutate: addCategory } = useAddCategory()
   const { mutate: deleteCategory } = useDeleteCategory()
   const { mutate: addTask } = useAddTask()
+  const { mutate: updateCategory } = useUpdateCategory()
 
   function handleAddTask() {
     bottomSheetAddTaskModalRef.current?.present()
@@ -128,7 +136,7 @@ export default function BottomTab({
       throw new Error("Title is required")
     }
 
-    const data = await mutate(
+    const data = await addCategory(
       { name: text, user_id: "", tasks: 0 },
       {
         onSuccess: (data) => {
@@ -181,9 +189,50 @@ export default function BottomTab({
     return data
   }
 
+  async function handleUpdateCategory(text: string) {
+    if (!text) {
+      throw new Error("Title is required")
+    }
+
+    const route: { params: { category: string; categoryId: string } } =
+      navigationRef.current?.getCurrentRoute() as any
+
+    if (!route || !route.params) {
+      throw new Error("Route is required")
+    }
+
+    const category = await findList(route.params.categoryId)
+    await updateCategory(
+      {
+        id: category.id,
+        name: text,
+        tasks: category.tasks,
+        user_id: category.user_id,
+      },
+      {
+        onSuccess: (data) => {
+          console.log("success", data)
+          bottomSheetRenameCategoryModalRef.current?.close()
+        },
+        onError: (err) => {
+          throw new Error(err.message)
+        },
+      },
+    )
+  }
+
   async function handleNavigateCategory(category: Category) {
     navigationRef.navigate(category.title, { categoryId: category.id })
     bottomSheetListsModalRef.current?.close()
+  }
+
+  async function handleOpenRenameCategoryBottomSheet() {
+    bottomSheetRenameCategoryModalRef.current?.present()
+  }
+
+  function handleChangeSortMode(sortMode: sortModeType) {
+    setSortMode(sortMode)
+    bottomSheetFilterModalRef.current?.close()
   }
 
   return (
@@ -201,15 +250,17 @@ export default function BottomTab({
         onNavigateCategory={handleNavigateCategory}
       />
       <AddTaskBottomSheet ref={bottomSheetAddTaskModalRef} onAddTask={handleAddDatabaseTask} />
+      <RenameCategorySheet
+        ref={bottomSheetRenameCategoryModalRef}
+        onRenameCategory={handleUpdateCategory}
+      />
       <FilterBottomSheet
-        currentCategoryId={currentCategoryId}
         ref={bottomSheetFilterModalRef}
+        currentCategoryId={currentCategoryId}
+        onOpenRenameCategoryBottomSheet={handleOpenRenameCategoryBottomSheet}
         onDeleteAllCompletedTasks={handleDeleteAllCompletedTasks}
         onDeleteCategory={handleDeleteCategory}
-        onSetSortMode={(sortMode) => {
-          setSortMode(sortMode)
-          bottomSheetFilterModalRef.current?.close()
-        }}
+        onSetSortMode={handleChangeSortMode}
       />
     </BottomSheetModalProvider>
   )

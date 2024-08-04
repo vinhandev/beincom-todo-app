@@ -19,6 +19,7 @@ type Props = {
   onDeleteAllCompletedTasks: () => Promise<void>
   onDeleteCategory: () => Promise<void>
   onSetSortMode: (type: sortModeType) => void
+  onOpenRenameCategoryBottomSheet: () => void
 }
 
 const SortTypeList: {
@@ -89,7 +90,16 @@ const DeleteAllCompletedTasks = enhanceDeleteAllCompletedTasks(
 )
 
 const FilterBottomSheet = forwardRef<BottomSheetModal, Props>(
-  ({ currentCategoryId, onDeleteAllCompletedTasks, onDeleteCategory, onSetSortMode }, ref) => {
+  (
+    {
+      currentCategoryId,
+      onOpenRenameCategoryBottomSheet,
+      onDeleteAllCompletedTasks,
+      onDeleteCategory,
+      onSetSortMode,
+    },
+    ref,
+  ) => {
     const sortMode = useUserStore((state) => state.sortMode)
     console.log("currentCategoryId", currentCategoryId)
 
@@ -106,7 +116,7 @@ const FilterBottomSheet = forwardRef<BottomSheetModal, Props>(
                 </TouchableOpacity>
               )}
             />
-            <Button title="Rename category" onPress={onDeleteAllCompletedTasks} />
+            <Button title="Rename category" onPress={onOpenRenameCategoryBottomSheet} />
             <DeleteButton onDeleteCategory={onDeleteCategory} title="Delete category" />
             <DeleteAllCompletedTasks
               currentCategoryId={currentCategoryId}

@@ -41,7 +41,7 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
     addingListRef.current?.present()
   }
 
-  function tabBarHeader(props: MaterialTopTabBarProps) {
+  function TabBarHeader(tabBarProps: MaterialTopTabBarProps & { categories: Category[] }) {
     return (
       <View
         style={[
@@ -52,13 +52,18 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
       >
         <View style={{ flex: 1 }}>
           <TabBar
-            {...props}
+            {...tabBarProps}
             scrollEnabled
             bounces
-            navigationState={props.state}
+            navigationState={tabBarProps.state}
             indicatorStyle={{ backgroundColor: "#782CC7" }}
             style={{ backgroundColor: "white" }}
-            renderLabel={(props) => <Text>{props.route.name}</Text>}
+            renderLabel={(props) => {
+              const name =
+                tabBarProps.categories.find((item) => item.id === props.route.name)?.title ?? ""
+
+              return <Text>{name}</Text>
+            }}
           />
         </View>
         <Button title="Plus" onPress={handleAddNewList} />
@@ -79,6 +84,8 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
     handleInitCategory()
   }, [categories])
 
+  console.log("categories", categories)
+
   return (
     <View style={{ flex: 1 }}>
       <BottomTab addingListRef={addingListRef}>
@@ -96,11 +103,14 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
         </View>
         <View style={[{ flex: 1 }, components.shadow]}>
           {categories && categories.length > 0 ? (
-            <Tab.Navigator tabBar={tabBarHeader}>
+            <Tab.Navigator
+              key={categories.toString()}
+              tabBar={(props) => <TabBarHeader categories={categories} {...props} />}
+            >
               {categories.map((category) => (
                 <Tab.Screen
-                  key={category.id}
-                  name={category.title}
+                  key={`${category.id}${category.title}`}
+                  name={category.id}
                   component={TaskScreen}
                   initialParams={{ categoryId: category.id }}
                 />
@@ -113,7 +123,7 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
   )
 }
 
-const enhance = withObservables([], () => ({
+const enhance = withObservables(["categories"], () => ({
   categories: CategoryDB.query(),
 }))
 export const EnhancedTopTabNavigator = enhance(TopTabNavigator)
