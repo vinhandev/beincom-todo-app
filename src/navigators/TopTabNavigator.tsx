@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { Button, Text, View } from "react-native"
 
 import { BottomSheetModal } from "@gorhom/bottom-sheet"
@@ -20,7 +20,7 @@ import { BottomTab } from "@/components/template"
 
 import Category from "@/models/category.model"
 import { TaskScreen } from "@/screens"
-import { CategoryDB } from "@/services/queries/category"
+import { CategoryDB, useAddCategory } from "@/services/queries/category"
 
 const Tab = createMaterialTopTabNavigator()
 
@@ -28,6 +28,7 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
   const addingListRef = useRef<BottomSheetModal>(null)
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "TopTab">>()
   const { components } = useTheme()
+  const { mutate } = useAddCategory()
 
   function handleNavigateProfile() {
     navigation.navigate("Profile")
@@ -64,6 +65,19 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
       </View>
     )
   }
+
+  useEffect(() => {
+    async function handleInitCategory() {
+      if (categories.length === 0) {
+        await mutate({
+          name: "My Tasks",
+          user_id: "",
+          tasks: 0,
+        })
+      }
+    }
+    handleInitCategory()
+  }, [categories])
 
   return (
     <View style={{ flex: 1 }}>
