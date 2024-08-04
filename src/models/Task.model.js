@@ -9,5 +9,6 @@ export default class Task extends Model {
 
   @field("title") title
   @field("is_completed") is_completed
+  @field("created_at") created_at
   @relation("categories", "category_id") category
 }

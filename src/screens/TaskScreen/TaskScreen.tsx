@@ -11,6 +11,8 @@ import { RootStackParamList } from "@/types/navigation"
 
 import { useTheme } from "@/theme"
 
+import useUserStore from "@/store/useUserStore"
+
 import Task from "@/models/task.model"
 import { TaskDB, TaskType, useUpdateTask } from "@/services/queries/task"
 
@@ -23,8 +25,15 @@ function TaskList({
   tasks: Task[]
   onNavigateTaskDetail: (taskId: string) => void
 }) {
-  let unCompletedTasks = tasks.filter((task) => !task.is_completed)
-  let completedTasks = tasks.filter((task) => task.is_completed)
+  const sortMode = useUserStore((state) => state.sortMode)
+  const formattedTasks =
+    sortMode === "default"
+      ? tasks.sort((a, b) => (a.created_at > b.created_at ? 1 : -1))
+      : sortMode === "asc"
+        ? tasks.sort((a, b) => (a.title > b.title ? 1 : -1))
+        : tasks.sort((a, b) => (a.title < b.title ? 1 : -1))
+  let unCompletedTasks = formattedTasks.filter((task) => !task.is_completed)
+  let completedTasks = formattedTasks.filter((task) => task.is_completed)
   const { mutate } = useUpdateTask()
 
   async function updateTaskStatus(task: Task) {

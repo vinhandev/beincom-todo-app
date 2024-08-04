@@ -9,6 +9,8 @@ import { InfiniteData, QueryObserverResult, RefetchOptions } from "@tanstack/rea
 
 import { useTheme } from "@/theme"
 
+import useUserStore from "@/store/useUserStore"
+
 import { database } from "@/models"
 import Category from "@/models/category.model"
 import { navigationRef } from "@/navigators/Application"
@@ -38,6 +40,7 @@ export default function BottomTab({
   // variables
   const snapPoints = useMemo(() => ["50%"], [])
   const snapPointsInput = useMemo(() => ["50%"], [])
+  const setSortMode = useUserStore((state) => state.setSortMode)
 
   // callbacks
   const handleSheetChanges = useCallback((index: number) => {
@@ -166,6 +169,10 @@ export default function BottomTab({
       <FilterBottomSheet
         ref={bottomSheetFilterModalRef}
         onDeleteAllCompletedTasks={handleDeleteAllCompletedTasks}
+        onSetSortMode={(sortMode) => {
+          setSortMode(sortMode)
+          bottomSheetFilterModalRef.current?.close()
+        }}
       />
     </BottomSheetModalProvider>
   )

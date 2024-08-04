@@ -14,6 +14,7 @@ export default appSchema({
       name: "tasks",
       columns: [
         { name: "title", type: "string" },
+        { name: "created_at", type: "number" },
         { name: "is_completed", type: "boolean" },
         { name: "category_id", type: "string", isIndexed: true },
       ],

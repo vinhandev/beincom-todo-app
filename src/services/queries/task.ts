@@ -13,6 +13,7 @@ export type TaskType = {
   isCompleted: boolean
   categoryId?: string
   category: CategoryType
+  createdAt?: number
 }
 
 export type TaskParams = {
@@ -41,6 +42,7 @@ export const addTask = async (payload: TaskType) => {
       const row = await TaskDB.create((entity) => {
         entity.title = payload.title
         entity.is_completed = payload.isCompleted
+        entity.created_at = new Date().getTime()
         entity.category.set(category || payload.category)
       })
       return row
