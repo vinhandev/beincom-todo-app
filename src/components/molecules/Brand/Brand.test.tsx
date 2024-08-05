@@ -1,50 +1,51 @@
-import { ViewStyle } from 'react-native';
-import { render, screen } from '@testing-library/react-native';
-import { MMKV } from 'react-native-mmkv';
+import { ViewStyle } from "react-native"
 
-import { ThemeProvider } from '@/theme';
+import { render, screen } from "@testing-library/react-native"
+import { MMKV } from "react-native-mmkv"
 
-import Brand from './Brand';
+import { ThemeProvider } from "@/theme"
 
-describe('Brand component should render correctly', () => {
-	let storage: MMKV;
+import Brand from "./Brand"
 
-	beforeAll(() => {
-		storage = new MMKV();
-	});
+describe("Brand component should render correctly", () => {
+  let storage: MMKV
 
-	test('with default props if not precises (height: 200, width: 200, resizeMode: "contain")', () => {
-		const component = (
-			<ThemeProvider storage={storage}>
-				<Brand />
-			</ThemeProvider>
-		);
+  beforeAll(() => {
+    storage = new MMKV()
+  })
 
-		render(component);
+  test('with default props if not precises (height: 200, width: 200, resizeMode: "contain")', () => {
+    const component = (
+      <ThemeProvider storage={storage}>
+        <Brand />
+      </ThemeProvider>
+    )
 
-		const wrapper = screen.getByTestId('brand-img-wrapper');
-		const img = screen.getByTestId('brand-img');
+    render(component)
 
-		// Props set correctly
-		expect((wrapper.props.style as ViewStyle).height).toBe(200);
-		expect((wrapper.props.style as ViewStyle).width).toBe(200);
-		expect(img.props.resizeMode).toBe('contain');
-	});
+    const wrapper = screen.getByTestId("brand-img-wrapper")
+    const img = screen.getByTestId("brand-img")
 
-	test('with passed props', () => {
-		const component = (
-			<ThemeProvider storage={storage}>
-				<Brand height={100} width={100} mode="cover" />
-			</ThemeProvider>
-		);
+    // Props set correctly
+    expect((wrapper.props.style as ViewStyle).height).toBe(200)
+    expect((wrapper.props.style as ViewStyle).width).toBe(200)
+    expect(img.props.resizeMode).toBe("contain")
+  })
 
-		render(component);
+  test("with passed props", () => {
+    const component = (
+      <ThemeProvider storage={storage}>
+        <Brand height={100} width={100} mode="cover" />
+      </ThemeProvider>
+    )
 
-		const wrapper = screen.getByTestId('brand-img-wrapper');
-		const img = screen.getByTestId('brand-img');
+    render(component)
 
-		expect((wrapper.props.style as ViewStyle).height).toBe(100);
-		expect((wrapper.props.style as ViewStyle).width).toBe(100);
-		expect(img.props.resizeMode).toBe('cover');
-	});
-});
+    const wrapper = screen.getByTestId("brand-img-wrapper")
+    const img = screen.getByTestId("brand-img")
+
+    expect((wrapper.props.style as ViewStyle).height).toBe(100)
+    expect((wrapper.props.style as ViewStyle).width).toBe(100)
+    expect(img.props.resizeMode).toBe("cover")
+  })
+})

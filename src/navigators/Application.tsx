@@ -1,27 +1,47 @@
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { LegacyRef, Ref, useRef } from "react"
 
-import { Example, Startup } from '@/screens';
-import { useTheme } from '@/theme';
+import {
+  createNavigationContainerRef,
+  NavigationContainer,
+  NavigationContainerProps,
+  NavigationContainerRef,
+} from "@react-navigation/native"
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 
-import type { RootStackParamList } from '@/types/navigation';
+import type { RootStackParamList } from "@/types/navigation"
 
-const Stack = createStackNavigator<RootStackParamList>();
+import { useTheme } from "@/theme"
+
+import { LoginScreen, ProfileScreen, SettingScreen, TaskDetailScreen } from "@/screens"
+
+import { EnhancedTopTabNavigator } from "./TopTabNavigator"
+
+const Stack = createNativeStackNavigator<RootStackParamList>()
+
+export const navigationRef = createNavigationContainerRef<RootStackParamList>()
 
 function ApplicationNavigator() {
-	const { variant, navigationTheme } = useTheme();
+  const { variant, navigationTheme } = useTheme()
 
-	return (
-		<SafeAreaProvider>
-			<NavigationContainer theme={navigationTheme}>
-				<Stack.Navigator key={variant} screenOptions={{ headerShown: false }}>
-					<Stack.Screen name="Startup" component={Startup} />
-					<Stack.Screen name="Example" component={Example} />
-				</Stack.Navigator>
-			</NavigationContainer>
-		</SafeAreaProvider>
-	);
+  return (
+    <SafeAreaProvider>
+      <NavigationContainer ref={navigationRef} theme={navigationTheme}>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Stack.Navigator
+            key={variant}
+            screenOptions={{ headerShown: false, animation: "slide_from_right" }}
+          >
+            <Stack.Screen name="TopTab" component={EnhancedTopTabNavigator} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Setting" component={SettingScreen} />
+            <Stack.Screen name="TaskDetail" component={TaskDetailScreen} />
+          </Stack.Navigator>
+        </SafeAreaView>
+      </NavigationContainer>
+    </SafeAreaProvider>
+  )
 }
 
-export default ApplicationNavigator;
+export default ApplicationNavigator

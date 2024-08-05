@@ -6,7 +6,7 @@
       "@/*": ["./src/*"]
     },
     "allowImportingTsExtensions": false,
-    "module": "esnext",
+    "module": "esnext"
   },
   "include": [
     "./src/**/*",
@@ -15,6 +15,7 @@
     "jest.setup.js",
     "jest.config.js",
     "babel.config.js",
+    "react-native.config.js",
     "index.js"
-  ],
+  ]
 }
