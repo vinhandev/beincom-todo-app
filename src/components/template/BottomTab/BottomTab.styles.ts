@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
   },
   bottomSheet: {
     flex: 1,
-    backgroundColor: "red",
   },
   tab: {
     height: 70,
@@ -15,12 +14,13 @@ export const styles = StyleSheet.create({
     justifyContent: "space-around",
     alignItems: "center",
 
-    padding: 10,
+    padding: 16,
 
     borderWidth: 0.5,
   },
   tabContent: {
     flex: 1,
     backgroundColor: "#ffffff",
+    gap: 12,
   },
 })

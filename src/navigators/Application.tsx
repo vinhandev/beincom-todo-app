@@ -7,7 +7,7 @@ import {
   NavigationContainerRef,
 } from "@react-navigation/native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { SafeAreaProvider } from "react-native-safe-area-context"
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context"
 
 import type { RootStackParamList } from "@/types/navigation"
 
@@ -27,16 +27,18 @@ function ApplicationNavigator() {
   return (
     <SafeAreaProvider>
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        <Stack.Navigator
-          key={variant}
-          screenOptions={{ headerShown: false, animation: "slide_from_right" }}
-        >
-          <Stack.Screen name="TopTab" component={EnhancedTopTabNavigator} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Profile" component={ProfileScreen} />
-          <Stack.Screen name="Setting" component={SettingScreen} />
-          <Stack.Screen name="TaskDetail" component={TaskDetailScreen} />
-        </Stack.Navigator>
+        <SafeAreaView style={{ flex: 1 }}>
+          <Stack.Navigator
+            key={variant}
+            screenOptions={{ headerShown: false, animation: "slide_from_right" }}
+          >
+            <Stack.Screen name="TopTab" component={EnhancedTopTabNavigator} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Setting" component={SettingScreen} />
+            <Stack.Screen name="TaskDetail" component={TaskDetailScreen} />
+          </Stack.Navigator>
+        </SafeAreaView>
       </NavigationContainer>
     </SafeAreaProvider>
   )

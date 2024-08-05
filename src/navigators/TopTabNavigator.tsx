@@ -15,7 +15,9 @@ import { TabBar } from "react-native-tab-view"
 import { RootStackParamList } from "@/types/navigation"
 
 import { useTheme } from "@/theme"
+import { LogoIcon } from "@/theme/assets/svg"
 
+import { SettingButton } from "@/components/atoms"
 import { BottomTab } from "@/components/template"
 
 import Category from "@/models/category.model"
@@ -27,7 +29,7 @@ const Tab = createMaterialTopTabNavigator()
 function TopTabNavigator({ categories }: { categories: Category[] }) {
   const addingListRef = useRef<BottomSheetModal>(null)
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, "TopTab">>()
-  const { components } = useTheme()
+  const { components, fonts, gutters, borders, backgrounds } = useTheme()
   const { mutate } = useAddCategory()
 
   function handleNavigateProfile() {
@@ -42,19 +44,42 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
   }
 
   function TabBarHeader(tabBarProps: MaterialTopTabBarProps & { categories: Category[] }) {
+    const { backgrounds } = useTheme()
     return (
       <TabBar
         {...tabBarProps}
         scrollEnabled
         bounces
         navigationState={tabBarProps.state}
-        indicatorStyle={{ backgroundColor: "#782CC7" }}
-        style={{ backgroundColor: "white" }}
-        tabStyle={{ width: 150 }}
+        indicatorStyle={backgrounds.purple500}
+        tabStyle={{
+          padding: 0,
+          margin: 0,
+          width: 120,
+        }}
+        style={[
+          backgrounds.white,
+          {
+            shadowColor: "#00000000",
+          },
+        ]}
         renderLabel={(props) => {
           const name =
             tabBarProps.categories.find((item) => item.id === props.route.name)?.title ?? ""
-          return <Text>{name}</Text>
+
+          console.log(name, props.focused)
+          return (
+            <Text
+              style={[
+                props.focused ? fonts.purple700 : fonts.gray700,
+                fonts.family_700,
+                fonts.size_16,
+                fonts.alignCenter,
+              ]}
+            >
+              {name}
+            </Text>
+          )
         }}
       />
     )
@@ -79,18 +104,20 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
     <View style={{ flex: 1 }}>
       <BottomTab addingListRef={addingListRef}>
         <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            alignItems: "center",
-            padding: 20,
-          }}
+          style={[
+            { flexDirection: "row", justifyContent: "space-around", alignItems: "center" },
+            gutters.paddingHorizontal_16,
+            gutters.paddingVertical_12,
+            borders.gray600,
+            borders.wBottom_2,
+          ]}
         >
-          <Button title="Open Profile" onPress={handleNavigateProfile} />
-          <Text>Tasks</Text>
-          <Button title="Open Setting" onPress={handleNavigateSetting} />
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 10, flex: 1 }}>
+            <LogoIcon />
+            <Text style={[fonts.purple500, fonts.family_700, fonts.size_24]}>todoapp</Text>
+          </View>
         </View>
-        <View style={[{ flex: 1 }, components.shadow]}>
+        <View style={[{ flex: 1 }, gutters.paddingTop_12]}>
           {categories && categories.length > 0 ? (
             <Tab.Navigator
               key={categories.toString()}

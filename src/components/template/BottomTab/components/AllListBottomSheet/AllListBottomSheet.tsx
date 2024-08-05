@@ -1,8 +1,16 @@
-import { forwardRef } from "react"
+import { forwardRef, useCallback } from "react"
 import { Button, Text, TouchableOpacity, View } from "react-native"
 
-import { BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet"
+import {
+  BottomSheetBackdrop,
+  BottomSheetBackdropProps,
+  BottomSheetModal,
+  BottomSheetView,
+} from "@gorhom/bottom-sheet"
 import { withObservables } from "@nozbe/watermelondb/react"
+
+import { useTheme } from "@/theme"
+import components from "@/theme/components"
 
 import Category from "@/models/category.model"
 import { navigationRef } from "@/navigators/Application"
@@ -20,11 +28,25 @@ function CategoryList({
   function handleNavigateCategory(category: Category) {
     onNavigateCategory(category)
   }
-  return categories.map((item) => (
-    <TouchableOpacity onPress={() => handleNavigateCategory(item)} key={item.id}>
-      <Text>{item.title}</Text>
-    </TouchableOpacity>
-  ))
+  const { gutters, borders, fonts } = useTheme()
+  return (
+    <View style={{ flex: 1 }}>
+      {categories.map((item, index) => (
+        <TouchableOpacity
+          style={[
+            gutters.paddingHorizontal_16,
+            gutters.paddingVertical_12,
+            index !== 0 ? borders.wTop_1 : null,
+            borders.gray600,
+          ]}
+          onPress={() => handleNavigateCategory(item)}
+          key={item.id}
+        >
+          <Text style={[fonts.family_400, fonts.gray700, fonts.size_16]}>{item.title}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  )
 }
 
 const enhance = withObservables([], () => ({
@@ -39,13 +61,25 @@ type Props = {
 }
 const AllListBottomSheet = forwardRef<BottomSheetModal, Props>(
   ({ onOpenAddListBottomSheet, onNavigateCategory }, ref) => {
+    const renderBackdrop = useCallback(
+      (props: BottomSheetBackdropProps) => (
+        <BottomSheetBackdrop {...props} appearsOnIndex={0} disappearsOnIndex={-1} />
+      ),
+      [],
+    )
+    const { gutters, components } = useTheme()
     return (
-      <BottomSheetModal ref={ref} index={0} snapPoints={["50%"]}>
-        <BottomSheetView style={styles.container}>
-          <List onNavigateCategory={onNavigateCategory} />
-          <View style={styles.tab}>
-            <Button title="Add List" onPress={onOpenAddListBottomSheet} />
+      <BottomSheetModal backdropComponent={renderBackdrop} ref={ref} index={0} snapPoints={["50%"]}>
+        <BottomSheetView
+          style={[styles.container, gutters.paddingHorizontal_16, gutters.paddingBottom_12]}
+        >
+          <View style={[{ flex: 1 }]}>
+            <Text style={components.header}>All Category</Text>
+            <List onNavigateCategory={onNavigateCategory} />
           </View>
+          <TouchableOpacity style={components.button} onPress={onOpenAddListBottomSheet}>
+            <Text style={components.textButton}>Add List</Text>
+          </TouchableOpacity>
         </BottomSheetView>
       </BottomSheetModal>
     )
