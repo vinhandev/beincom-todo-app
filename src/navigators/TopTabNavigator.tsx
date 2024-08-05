@@ -44,6 +44,7 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
   }
 
   function TabBarHeader(tabBarProps: MaterialTopTabBarProps & { categories: Category[] }) {
+    const { backgrounds } = useTheme()
     return (
       <TabBar
         {...tabBarProps}
@@ -56,7 +57,12 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
           margin: 0,
           width: 120,
         }}
-        style={{ backgroundColor: "white" }}
+        style={[
+          backgrounds.white,
+          {
+            shadowColor: "#00000000",
+          },
+        ]}
         renderLabel={(props) => {
           const name =
             tabBarProps.categories.find((item) => item.id === props.route.name)?.title ?? ""
@@ -110,9 +116,8 @@ function TopTabNavigator({ categories }: { categories: Category[] }) {
             <LogoIcon />
             <Text style={[fonts.purple500, fonts.family_700, fonts.size_24]}>todoapp</Text>
           </View>
-          <SettingButton onPress={handleNavigateSetting} />
         </View>
-        <View style={[{ flex: 1 }, components.shadow, gutters.paddingTop_12]}>
+        <View style={[{ flex: 1 }, gutters.paddingTop_12]}>
           {categories && categories.length > 0 ? (
             <Tab.Navigator
               key={categories.toString()}
