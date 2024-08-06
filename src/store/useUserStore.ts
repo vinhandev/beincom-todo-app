@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { persist, StateStorage } from "zustand/middleware"
+import { createJSONStorage, persist, StateStorage } from "zustand/middleware"
 
 import { storage } from "@/App"
 
@@ -29,7 +29,7 @@ const useUserStore = create<UserStore>()(
     }),
     {
       name: "user",
-      getStorage: () => MMKVStorage,
+      storage: createJSONStorage(() => MMKVStorage),
     },
   ),
 )
