@@ -10,3 +10,5 @@ Additional features:
 - [Reactotron](): For debug code
 
 - [Jest](): For unit test
+
+I've added APK file in source code: todoapp.apk
