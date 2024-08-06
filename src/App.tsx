@@ -11,7 +11,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler"
 
 export const queryClient = new QueryClient()
 
-export const storage = new MMKV()
+export const storage = new MMKV({
+  id: "mmkv",
+  encryptionKey: "hunter2",
+})
 
 function App() {
   return (
