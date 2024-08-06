@@ -1,6 +1,4 @@
-import { Q } from "@nozbe/watermelondb"
-import { useInfiniteQuery, useMutation, UseMutationOptions } from "@tanstack/react-query"
-import { max } from "lodash"
+import { useMutation, UseMutationOptions } from "@tanstack/react-query"
 
 import { database } from "@/models"
 import Task from "@/models/task.model"
@@ -50,50 +48,6 @@ export const addTask = async (payload: TaskType) => {
 
     return result
   }
-}
-
-export const useInfiniteTasks = (params: TaskParams, options = {}) => {
-  return useInfiniteQuery({
-    queryKey: ["tasks", params],
-    queryFn: async ({ pageParam = 1 }): Promise<TaskPage> => {
-      const perPage = params?.per_page || 5000
-      const indexOfLastProduct = pageParam * perPage
-      const indexOfFirstPage = indexOfLastProduct - perPage
-      const countData = await TaskDB.query().fetchCount()
-      const pages = []
-      for (let i = 1; i <= Math.ceil(countData / perPage); i++) {
-        pages.push(i)
-      }
-      const lastPage = max(pages) || 1
-      const data: Task[] = await TaskDB.query(
-        Q.where("name", Q.like(`%${Q.sanitizeLikeString(params.search || "")}%`)),
-        Q.where("id", Q.like(`${Q.sanitizeLikeString(params.id || "")}%`)),
-        Q.sortBy("name", Q.asc),
-        Q.skip(indexOfFirstPage),
-        Q.take(perPage),
-      ).fetch()
-
-      return {
-        data: data.map((item) => ({
-          id: item.id,
-          title: item.title,
-          isCompleted: item.is_completed,
-          categoryId: item.category.id,
-          category: item.category,
-        })),
-        last_page: lastPage,
-        current_page: pageParam,
-      }
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage: TaskPage) => {
-      if (!lastPage) {
-        return undefined
-      }
-      return lastPage.current_page < lastPage.last_page ? lastPage.current_page + 1 : undefined
-    },
-    ...options,
-  })
 }
 
 export const updateTask = async (payload: TaskType) => {

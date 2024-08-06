@@ -1,6 +1,5 @@
 import { Q } from "@nozbe/watermelondb"
-import { useInfiniteQuery, useMutation, UseMutationOptions } from "@tanstack/react-query"
-import { max } from "lodash"
+import { useMutation, UseMutationOptions } from "@tanstack/react-query"
 
 import { database } from "@/models"
 import Category from "@/models/category.model"
@@ -89,42 +88,4 @@ export const useDeleteCategory = () => {
     mutationFn: deleteList,
   }
   return useMutation(mutationOptions)
-}
-
-export const useInfiniteCategories = (params: CategoryParams, options = {}) => {
-  return useInfiniteQuery({
-    queryKey: ["categories", params],
-    queryFn: async ({ pageParam = 1 }): Promise<CategoryPage> => {
-      const perPage = params?.per_page || 5000
-      const indexOfLastCategory = pageParam * perPage
-      const indexOfFirstPage = indexOfLastCategory - perPage
-      const countData = await CategoryDB.query().fetchCount()
-      const pages = []
-      for (let i = 1; i <= Math.ceil(countData / perPage); i++) {
-        pages.push(i)
-      }
-      const lastPage = max(pages) || 1
-      const data: Category[] = await CategoryDB.query(
-        Q.where("name", Q.like(`%${Q.sanitizeLikeString(params.search || "")}%`)),
-        Q.where("id", Q.like(`${Q.sanitizeLikeString(params.id || "")}%`)),
-        Q.sortBy("name", Q.asc),
-        Q.skip(indexOfFirstPage),
-        Q.take(perPage),
-      ).fetch()
-
-      return {
-        data: data.map((item) => ({ id: item.id, name: item.title, tasks: item.tasks })),
-        last_page: lastPage,
-        current_page: pageParam,
-      }
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage: CategoryPage) => {
-      if (!lastPage) {
-        return undefined
-      }
-      return lastPage.current_page < lastPage.last_page ? lastPage.current_page + 1 : undefined
-    },
-    ...options,
-  })
 }
